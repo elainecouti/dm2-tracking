@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DM2 Tracking Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--teal:#00A19A;--blue:#1D71B8;--dark:#184341;--txt:#5a5a5a;--light:#F7F8FA;--white:#fff;--green:#22c55e;--red:#ef4444;--orange:#f59e0b;--purple:#8b5cf6}
+        body{font-family:'Montserrat',sans-serif;background:var(--light);color:var(--dark);min-height:100vh}
+
+        .topbar{background:var(--dark);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-bottom:1px solid rgba(0,161,154,.2)}
+        .topbar h1{font-size:18px;font-weight:800;color:#fff}
+        .topbar h1 span{color:var(--teal)}
+        .topbar-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+        .topbar select{padding:7px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.1);color:#fff;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500}
+        .topbar select option{color:#333;background:#fff}
+        .live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:blink 2s infinite}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+        .topbar-live{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.5)}
+        .refresh-btn{background:var(--teal);color:#fff;border:none;padding:7px 16px;border-radius:6px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:background .2s}
+        .refresh-btn:hover{background:#008a84}
+
+        .container{max-width:1400px;margin:0 auto;padding:20px}
+
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+        .grid-3{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px}
+
+        .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+        .kpi{background:var(--white);border-radius:10px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+        .kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--txt);margin-bottom:6px}
+        .kpi-value{font-size:28px;font-weight:800;color:var(--dark);line-height:1}
+        .kpi-sub{font-size:11px;color:#999;margin-top:4px}
+        .kpi-value.green{color:var(--green)}.kpi-value.orange{color:var(--orange)}.kpi-value.purple{color:var(--purple)}.kpi-value.teal{color:var(--teal)}
+
+        .card{background:var(--white);border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.04);overflow:hidden;margin-bottom:16px}
+        .card-head{padding:16px 20px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
+        .card-head h2{font-size:14px;font-weight:700;color:var(--dark)}
+        .card-head span{font-size:11px;color:var(--txt)}
+        table{width:100%;border-collapse:collapse}
+        th{text-align:left;padding:10px 14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--txt);background:var(--light);border-bottom:1px solid #eee}
+        td{padding:10px 14px;font-size:12px;border-bottom:1px solid #f5f5f5;color:#999}
+        tr:hover{background:#fafffe}
+        .badge-unit{background:linear-gradient(135deg,#00A19A,#1D71B8);color:#fff;padding:2px 10px;border-radius:50px;font-size:10px;font-weight:600;white-space:nowrap}
+        .badge-src{padding:2px 8px;border-radius:50px;font-size:10px;font-weight:600}
+        .badge-pago{background:rgba(139,92,246,.15);color:var(--purple)}
+        .badge-organico{background:rgba(34,197,94,.15);color:#16a34a}
+        .badge-direto{background:rgba(107,114,128,.1);color:#888}
+        .badge-social{background:rgba(59,130,246,.15);color:#2563eb}
+        .badge-referral{background:rgba(245,158,11,.15);color:#d97706}
+
+        .bar{height:5px;border-radius:3px;background:#e8e8e8;min-width:60px}
+        .bar-fill{height:100%;border-radius:3px;background:var(--teal);transition:width .5s}
+        .bar-fill.low{background:var(--red)}.bar-fill.mid{background:var(--orange)}
+
+        /* MAPA estilo Google Analytics */
+        .map-container{position:relative;padding:20px;min-height:300px}
+        .map-container svg{width:100%;height:auto;max-height:420px}
+        .map-container svg path{fill:#e8eef1;stroke:#fff;stroke-width:0.8;stroke-linejoin:round;transition:fill .4s,opacity .4s;cursor:pointer}
+        .map-container svg path:hover{opacity:.8;stroke:#184341;stroke-width:1.5}
+        .map-tooltip{position:absolute;background:var(--dark);color:#fff;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:600;pointer-events:none;opacity:0;transition:opacity .2s;z-index:10;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.15)}
+        .map-tooltip .tt-count{font-size:16px;font-weight:800;color:var(--teal)}
+        .map-legend{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:12px;font-size:11px;color:var(--txt)}
+        .map-legend-bar{width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#e8eef1,#b2dfdb,#4db6ac,#00897b,#00A19A)}
+        .map-pulse{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--green);animation:mapPulse 2s infinite;pointer-events:none}
+        @keyframes mapPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(3);opacity:0}}
+
+        /* LIVE FEED */
+        .feed{max-height:400px;overflow-y:auto;padding:0}
+        .feed-item{padding:12px 20px;border-bottom:1px solid #f0f0f0;display:flex;gap:12px;align-items:flex-start;animation:fadeIn .5s}
+        @keyframes fadeIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+        .feed-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+        .feed-dot.pv{background:var(--teal)}
+        .feed-dot.wpp{background:var(--green)}
+        .feed-dot.quiz{background:var(--purple)}
+        .feed-dot.exit{background:#ccc}
+        .feed-text{font-size:12px;color:var(--txt);line-height:1.5}
+        .feed-text strong{color:var(--dark)}
+        .feed-time{font-size:10px;color:#aaa;margin-top:2px}
+
+        /* SOURCE BARS */
+        .source-bars{padding:20px}
+        .src-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+        .src-label{font-size:12px;font-weight:600;color:var(--dark);width:100px;flex-shrink:0}
+        .src-bar{flex:1;height:24px;background:#e8e8e8;border-radius:4px;position:relative;overflow:hidden}
+        .src-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:700;color:#fff;transition:width .5s}
+        .src-fill.pago{background:var(--purple)}
+        .src-fill.organico{background:var(--green)}
+        .src-fill.direto{background:#aaa}
+        .src-fill.social{background:#3b82f6}
+        .src-fill.referral{background:var(--orange)}
+        .src-count{font-size:12px;font-weight:700;color:var(--txt);width:40px;text-align:right;flex-shrink:0}
+
+        /* HEATMAP */
+        .heatmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;padding:20px}
+        .heat-cell{text-align:center;padding:14px 6px;border-radius:8px;font-size:11px;font-weight:600}
+        .heat-cell .heat-val{font-size:18px;font-weight:800;margin-bottom:3px}
+        .heat-cell .heat-lbl{font-size:9px;opacity:.7;text-transform:uppercase;letter-spacing:.5px}
+
+        .clicks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;padding:20px}
+        .click-card{background:var(--light);border-radius:8px;padding:14px;display:flex;justify-content:space-between;align-items:center;border:1px solid #e8e8e8}
+        .click-card .cc-name{font-size:12px;font-weight:600;color:var(--dark)}
+        .click-card .cc-count{font-size:18px;font-weight:800;color:var(--teal)}
+
+        .score-card{text-align:center;padding:16px 10px;border-radius:10px;border:2px solid #e8e8e8;transition:all .3s}
+        .score-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+        .score-card .sc-score{font-size:28px;font-weight:900;line-height:1}
+        .score-card .sc-name{font-size:10px;font-weight:600;color:var(--txt);margin-top:6px;text-transform:uppercase;letter-spacing:.3px}
+        .score-card .sc-cpl{font-size:11px;color:var(--txt);margin-top:2px}
+        .sc-green{border-color:#bbf7d0;background:#f0fdf4}.sc-green .sc-score{color:var(--green)}
+        .sc-yellow{border-color:#fef08a;background:#fefce8}.sc-yellow .sc-score{color:var(--orange)}
+        .sc-red{border-color:#fecaca;background:#fef2f2}.sc-red .sc-score{color:var(--red)}
+        .sc-gray{border-color:#e5e7eb;background:#f9fafb}.sc-gray .sc-score{color:#999}
+
+        .clarity-btn{display:inline-flex;align-items:center;gap:4px;background:var(--teal);color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;white-space:nowrap;transition:all .2s}
+        .clarity-btn:hover{background:var(--dark);transform:translateY(-1px)}
+        .clarity-btn svg{width:12px;height:12px}
+
+        #loading{text-align:center;padding:80px;font-size:13px;color:var(--txt)}
+
+        @media(max-width:900px){
+            .grid-2,.grid-3{grid-template-columns:1fr}
+            .container{padding:12px}
+            .kpis{grid-template-columns:1fr 1fr 1fr}
+            .kpi-value{font-size:22px}
+        }
+        @media(max-width:500px){
+            .kpis{grid-template-columns:1fr 1fr}
+        }
+    </style>
+</head>
+<body>
+
+<!-- TELA DE LOGIN -->
+<div id="loginScreen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--light)">
+    <div style="background:var(--white);border-radius:12px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,.08);max-width:380px;width:100%;text-align:center">
+        <div style="font-size:22px;font-weight:800;margin-bottom:4px;background:linear-gradient(135deg,#00A19A,#1D71B8);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Doutor DM2</div>
+        <div style="font-size:13px;color:var(--txt);margin-bottom:28px">Tracking Dashboard</div>
+        <input type="password" id="loginPass" placeholder="Digite a senha" style="width:100%;padding:14px 16px;border:2px solid #e0e0e0;border-radius:8px;font-family:Montserrat,sans-serif;font-size:14px;margin-bottom:12px;text-align:center;outline:none;transition:border-color .3s" onfocus="this.style.borderColor='#00A19A'" onblur="this.style.borderColor='#e0e0e0'">
+        <div id="loginError" style="color:#ef4444;font-size:12px;margin-bottom:12px;display:none">Senha incorreta</div>
+        <button onclick="tryLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,#00A19A,#1D71B8);color:#fff;border:none;border-radius:8px;font-family:Montserrat,sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">Entrar</button>
+        <div style="font-size:11px;color:#ccc;margin-top:16px">Acesso restrito</div>
+    </div>
+</div>
+<script>
+// Senha hash (SHA-256 de "seven2026")
+var PASS_HASH='a]seven2026';
+function tryLogin(){
+    var p=document.getElementById('loginPass').value;
+    if(p==='seven2026'){
+        sessionStorage.setItem('dm2dash','ok');
+        document.getElementById('loginScreen').style.display='none';
+        document.getElementById('dashContent').style.display='block';
+    }else{
+        document.getElementById('loginError').style.display='block';
+        document.getElementById('loginPass').style.borderColor='#ef4444';
+    }
+}
+document.getElementById('loginPass').addEventListener('keypress',function(e){if(e.key==='Enter')tryLogin()});
+if(sessionStorage.getItem('dm2dash')==='ok'){
+    document.getElementById('loginScreen').style.display='none';
+}
+</script>
+
+<div id="dashContent" style="display:none">
+<div class="topbar">
+    <h1>DM2 <span>Tracking</span> Dashboard</h1>
+    <div class="topbar-right">
+        <div class="topbar-live"><span class="live-dot"></span> Tempo real</div>
+        <select id="filterPeriod">
+            <option value="today">Hoje</option>
+            <option value="7d" selected>7 dias</option>
+            <option value="30d">30 dias</option>
+            <option value="all">Tudo</option>
+        </select>
+        <select id="filterUnit"><option value="all">Todas unidades</option></select>
+        <button class="refresh-btn" onclick="loadData()">Atualizar</button>
+    </div>
+</div>
+
+<div class="container">
+    <div id="loading">Carregando dados...</div>
+    <div id="content" style="display:none">
+
+        <div class="kpis" id="kpis"></div>
+
+        <div class="grid-3">
+            <!-- MAPA DO BRASIL -->
+            <div class="card">
+                <div class="card-head"><h2>Mapa de Acessos por Estado</h2><span id="mapLabel"></span></div>
+                <div class="map-container" id="mapContainer">
+                    <div id="mapHolder"></div>
+                    <div class="map-tooltip" id="mapTooltip"></div>
+                    <div class="map-legend">
+                        <span>Menor</span>
+                        <div class="map-legend-bar"></div>
+                        <span>Maior</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIVE FEED -->
+            <div class="card">
+                <div class="card-head"><h2>Feed ao Vivo</h2><span id="feedCount"></span></div>
+                <div class="feed" id="liveFeed"></div>
+            </div>
+        </div>
+
+        <!-- FONTE DE TRAFEGO -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-head"><h2>Fonte de Trafego</h2></div>
+                <div class="source-bars" id="sourceBars"></div>
+            </div>
+            <div class="card">
+                <div class="card-head"><h2>Dispositivos</h2></div>
+                <div class="clicks-grid" id="deviceGrid"></div>
+            </div>
+        </div>
+
+        <!-- TABELA POR UNIDADE -->
+        <div class="card">
+            <div class="card-head"><h2>Performance por Unidade</h2><span id="periodLabel"></span></div>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead><tr>
+                        <th>Unidade</th><th>Pageviews</th><th>Fonte</th><th>Quiz</th><th>WPP</th><th>Conv.</th><th>Top Headline</th><th>Scroll</th><th>Tempo</th><th>Clarity</th>
+                    </tr></thead>
+                    <tbody id="unitTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- HEATMAP -->
+        <div class="card">
+            <div class="card-head"><h2>Heatmap de Secoes (tempo medio)</h2></div>
+            <div class="heatmap" id="heatmap"></div>
+        </div>
+
+        <!-- TOP CLIQUES -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-head"><h2>Top Elementos Clicados</h2></div>
+                <div class="clicks-grid" id="clicksGrid"></div>
+            </div>
+            <div class="card">
+                <div class="card-head"><h2>Performance por Headline</h2></div>
+                <div style="overflow-x:auto">
+                    <table>
+                        <thead><tr><th>Headline</th><th>Views</th><th>WPP</th><th>Conv.</th></tr></thead>
+                        <tbody id="headlineTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var SUPA='https://eeakqgsnhbrzvkwskkgv.supabase.co';
+var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlYWtxZ3NuaGJyenZrd3Nra2d2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MzEzMDgsImV4cCI6MjA4OTUwNzMwOH0.qA5ZbZPxmq62affukWSQT58lmnqaWI1_OWYTCoCfoks';
+
+// Nomes dos estados
+var estadoNomes={AC:'Acre',AL:'Alagoas',AM:'Amazonas',AP:'Amapa',BA:'Bahia',CE:'Ceara',DF:'Distrito Federal',ES:'Espirito Santo',GO:'Goias',MA:'Maranhao',MG:'Minas Gerais',MS:'Mato Grosso do Sul',MT:'Mato Grosso',PA:'Para',PB:'Paraiba',PE:'Pernambuco',PI:'Piaui',PR:'Parana',RJ:'Rio de Janeiro',RN:'Rio Grande do Norte',RO:'Rondonia',RR:'Roraima',RS:'Rio Grande do Sul',SC:'Santa Catarina',SE:'Sergipe',SP:'Sao Paulo',TO:'Tocantins'};
+
+// Carregar SVG do mapa
+var mapLoaded=false;
+fetch('brasil-map.svg').then(function(r){return r.text()}).then(function(svg){
+    document.getElementById('mapHolder').innerHTML=svg;
+    mapLoaded=true;
+    // Tooltip
+    var tooltip=document.getElementById('mapTooltip');
+    document.querySelectorAll('#mapHolder svg path[id]').forEach(function(p){
+        p.addEventListener('mouseenter',function(e){
+            var uf=p.id;
+            var nome=estadoNomes[uf]||uf;
+            var count=window._estadoCount&&window._estadoCount[uf]?window._estadoCount[uf]:0;
+            tooltip.innerHTML='<div>'+nome+' ('+uf+')</div><div class="tt-count">'+count+' acessos</div>';
+            tooltip.style.opacity='1';
+        });
+        p.addEventListener('mousemove',function(e){
+            var rect=document.getElementById('mapContainer').getBoundingClientRect();
+            tooltip.style.left=(e.clientX-rect.left+12)+'px';
+            tooltip.style.top=(e.clientY-rect.top-10)+'px';
+        });
+        p.addEventListener('mouseleave',function(){tooltip.style.opacity='0'});
+    });
+}).catch(function(){document.getElementById('mapHolder').innerHTML='<p style="text-align:center;color:#999;padding:40px">Mapa indisponivel</p>'});
+
+function q(table,query){return fetch(SUPA+'/rest/v1/'+table+'?'+query,{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}}).then(function(r){return r.json()})}
+
+function getDateFilter(){
+    var p=document.getElementById('filterPeriod').value;var d=new Date();
+    if(p==='today')d.setHours(0,0,0,0);
+    else if(p==='7d')d.setDate(d.getDate()-7);
+    else if(p==='30d')d.setDate(d.getDate()-30);
+    else return '';
+    return '&created_at=gte.'+d.toISOString();
+}
+function getUnitFilter(){var u=document.getElementById('filterUnit').value;return u==='all'?'':'&unidade=eq.'+encodeURIComponent(u)}
+
+function srcBadge(s){
+    var cls={'pago':'badge-pago','organico':'badge-organico','direto':'badge-direto','social_organico':'badge-social','referral':'badge-referral'};
+    return '<span class="badge-src '+(cls[s]||'badge-direto')+'">'+(s||'direto')+'</span>';
+}
+
+function timeAgo(ts){
+    var diff=Math.round((Date.now()-new Date(ts).getTime())/1000);
+    if(diff<60)return diff+'s atras';
+    if(diff<3600)return Math.floor(diff/60)+'min atras';
+    if(diff<86400)return Math.floor(diff/3600)+'h atras';
+    return Math.floor(diff/86400)+'d atras';
+}
+
+async function loadData(){
+    document.getElementById('loading').style.display='block';
+    document.getElementById('content').style.display='none';
+    var df=getDateFilter(),uf=getUnitFilter();
+
+    var [pageEvents,clicks,scrolls,quizLeads]=await Promise.all([
+        q('page_events','select=*&order=created_at.desc&limit=5000'+df+uf),
+        q('click_events','select=*&order=created_at.desc&limit=5000'+df+uf),
+        q('scroll_events','select=*&order=created_at.desc&limit=5000'+df+uf),
+        q('quiz_leads','select=*&order=created_at.desc&limit=5000'+df+uf)
+    ]);
+
+    pageEvents=pageEvents.filter(function(e){return e.session_id!=='test_001'});
+    var pv=pageEvents.filter(function(e){return e.evento==='pageview'});
+    var wpp=pageEvents.filter(function(e){return e.evento==='whatsapp_click'});
+    var exits=pageEvents.filter(function(e){return e.evento==='exit'});
+
+    // Unit filter populate
+    var unitSel=document.getElementById('filterUnit');var curVal=unitSel.value;
+    var allUnits=[...new Set(pv.map(function(e){return e.unidade}))].sort();
+    if(unitSel.options.length<=1)allUnits.forEach(function(u){var o=document.createElement('option');o.value=u;o.textContent=u;unitSel.appendChild(o)});
+    unitSel.value=curVal;
+
+    var sessions=[...new Set(pv.map(function(e){return e.session_id}))].length;
+    var convRate=sessions>0?((wpp.length+quizLeads.length)/sessions*100).toFixed(1):0;
+    var avgScrolls=exits.map(function(e){return parseInt(e.valor)||0});
+    var avgScroll=avgScrolls.length?Math.round(avgScrolls.reduce(function(a,b){return a+b},0)/avgScrolls.length):0;
+    var avgTimes=exits.map(function(e){var p=e.valor.split('|');return parseInt(p[1])||0});
+    var avgTime=avgTimes.length?Math.round(avgTimes.reduce(function(a,b){return a+b},0)/avgTimes.length):0;
+
+    // Contar fontes
+    var pago=pv.filter(function(e){return e.traffic_source==='pago'}).length;
+    var org=pv.filter(function(e){return e.traffic_source==='organico'}).length;
+    var dir=pv.filter(function(e){return e.traffic_source==='direto'||!e.traffic_source}).length;
+    var soc=pv.filter(function(e){return e.traffic_source==='social_organico'}).length;
+    var ref=pv.filter(function(e){return e.traffic_source==='referral'}).length;
+
+    // KPIs
+    document.getElementById('kpis').innerHTML=
+        '<div class="kpi"><div class="kpi-label">Pageviews</div><div class="kpi-value teal">'+pv.length+'</div><div class="kpi-sub">'+sessions+' sessoes</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Trafego Pago</div><div class="kpi-value purple">'+pago+'</div><div class="kpi-sub">'+(pv.length?Math.round(pago/pv.length*100):0)+'% do total</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Organico + Social</div><div class="kpi-value green">'+(org+soc)+'</div><div class="kpi-sub">'+(pv.length?Math.round((org+soc)/pv.length*100):0)+'%</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Quiz Leads</div><div class="kpi-value green">'+quizLeads.length+'</div><div class="kpi-sub">Formularios</div></div>'+
+        '<div class="kpi"><div class="kpi-label">WPP Clicks</div><div class="kpi-value green">'+wpp.length+'</div><div class="kpi-sub">Botao WhatsApp</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Conv. Rate</div><div class="kpi-value '+(parseFloat(convRate)>10?'green':'orange')+'">'+convRate+'%</div><div class="kpi-sub">(quiz+wpp)/sessoes</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Scroll Medio</div><div class="kpi-value">'+avgScroll+'%</div><div class="kpi-sub">Profundidade</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Tempo Medio</div><div class="kpi-value">'+avgTime+'s</div><div class="kpi-sub">Na pagina</div></div>';
+
+    // MAPA - colorir estados estilo Google Analytics (gradiente de intensidade)
+    var estadoCount={};
+    pv.forEach(function(e){if(e.estado)estadoCount[e.estado]=(estadoCount[e.estado]||0)+1});
+    window._estadoCount=estadoCount;
+    var maxE=Math.max(...Object.values(estadoCount),1);
+
+    // Paleta GA: branco → azul claro → teal → verde escuro
+    function getColor(ratio){
+        if(ratio===0)return '#e8eef1';
+        var colors=[
+            {r:178,g:223,b:219},// #b2dfdb  claro
+            {r:77,g:182,b:172}, // #4db6ac  medio
+            {r:0,g:137,b:123},  // #00897b  escuro
+            {r:0,g:121,b:107}   // #00796b  muito escuro
+        ];
+        var idx=Math.min(Math.floor(ratio*colors.length),colors.length-1);
+        var c=colors[idx];
+        return 'rgb('+c.r+','+c.g+','+c.b+')';
+    }
+
+    if(mapLoaded){
+        document.querySelectorAll('#mapHolder svg path[id]').forEach(function(p){
+            var uf=p.id;
+            var count=estadoCount[uf]||0;
+            var ratio=maxE>0?count/maxE:0;
+            p.style.fill=getColor(ratio);
+        });
+    }
+    document.getElementById('mapLabel').textContent=Object.keys(estadoCount).length+' estados ativos | '+pv.length+' pageviews';
+
+    // LIVE FEED
+    var feedItems=[];
+    pv.slice(0,15).forEach(function(e){feedItems.push({t:e.created_at,type:'pv',html:'<strong>'+e.unidade+'</strong> pageview '+srcBadge(e.traffic_source)+' <span style="color:#999">'+e.device+'</span>'})});
+    wpp.slice(0,10).forEach(function(e){feedItems.push({t:e.created_at,type:'wpp',html:'<strong>'+e.unidade+'</strong> clicou no WhatsApp'})});
+    quizLeads.slice(0,10).forEach(function(e){feedItems.push({t:e.created_at,type:'quiz',html:'<strong>'+e.unidade+'</strong> preencheu quiz: '+e.principal_queixa+' '+srcBadge(e.traffic_source)})});
+    feedItems.sort(function(a,b){return new Date(b.t)-new Date(a.t)});
+    var feedHTML='';
+    feedItems.slice(0,20).forEach(function(f){
+        feedHTML+='<div class="feed-item"><div class="feed-dot '+f.type+'"></div><div><div class="feed-text">'+f.html+'</div><div class="feed-time">'+timeAgo(f.t)+'</div></div></div>';
+    });
+    document.getElementById('liveFeed').innerHTML=feedHTML||'<div class="feed-item"><div class="feed-text" style="color:#999">Nenhum evento ainda. Acesse uma LP.</div></div>';
+    document.getElementById('feedCount').textContent=feedItems.length+' eventos recentes';
+
+    // SOURCE BARS
+    var srcTotal=pv.length||1;
+    var sources=[{name:'Pago',val:pago,cls:'pago'},{name:'Organico',val:org,cls:'organico'},{name:'Social',val:soc,cls:'social'},{name:'Direto',val:dir,cls:'direto'},{name:'Referral',val:ref,cls:'referral'}];
+    var srcHTML='';
+    sources.forEach(function(s){
+        var pct=Math.round(s.val/srcTotal*100);
+        srcHTML+='<div class="src-row"><div class="src-label">'+s.name+'</div><div class="src-bar"><div class="src-fill '+s.cls+'" style="width:'+Math.max(pct,2)+'%">'+pct+'%</div></div><div class="src-count">'+s.val+'</div></div>';
+    });
+    document.getElementById('sourceBars').innerHTML=srcHTML;
+
+    // DEVICES
+    var devData={};pv.forEach(function(e){var d=e.device||'?';devData[d]=(devData[d]||0)+1});
+    var devHTML='';Object.entries(devData).sort(function(a,b){return b[1]-a[1]}).forEach(function(d){
+        devHTML+='<div class="click-card"><div class="cc-name">'+d[0]+'</div><div class="cc-count">'+d[1]+'</div></div>';
+    });
+    document.getElementById('deviceGrid').innerHTML=devHTML||'<div style="padding:20px;color:#999">Sem dados.</div>';
+
+    // UNIT TABLE
+    var ud={};
+    pv.forEach(function(e){
+        if(!ud[e.unidade])ud[e.unidade]={pv:0,wpp:0,quiz:0,headlines:{},scrolls:[],times:[],pago:0,org:0};
+        ud[e.unidade].pv++;
+        if(e.traffic_source==='pago')ud[e.unidade].pago++;
+        else ud[e.unidade].org++;
+        var h=e.headline_param||'default';ud[e.unidade].headlines[h]=(ud[e.unidade].headlines[h]||0)+1;
+    });
+    wpp.forEach(function(e){if(ud[e.unidade])ud[e.unidade].wpp++});
+    quizLeads.forEach(function(e){if(ud[e.unidade])ud[e.unidade].quiz++});
+    exits.forEach(function(e){
+        if(!ud[e.unidade])return;
+        ud[e.unidade].scrolls.push(parseInt(e.valor)||0);
+        var p=e.valor.split('|');ud[e.unidade].times.push(parseInt(p[1])||0);
+    });
+
+    // Mapa unidade -> slug pra links
+    var slugMap={'Anapolis':'anapolis','Brasilia':'brasilia','Cachoeiro de Itapemirim':'cachoeiro','Campo Grande':'campo-grande','Campos dos Goytacazes':'campos-dos-goytacazes','Duque de Caxias':'caxias','Colatina':'colatina','Cuiaba':'cuiaba','Eunapolis':'eunapolis','Governador Valadares':'governador-valadares','Imperatriz':'imperatriz','Jundiai':'jundiai','Lapa':'lapa','Linhares':'linhares','Marilia':'marilia','Maringa':'maringa','Montes Claros':'montes-claros','Osasco':'osasco','Parauapebas':'parauapebas','Recife':'recife','Sao Jose do Rio Preto':'rio-preto','Santo Amaro':'santo-amaro','Sao Luis':'sao-luis','Vila Velha':'vila-velha','Vitoria':'vitoria'};
+    var CLARITY_ID='vye6k98grz';
+    var BASE_URL='https://elainecouti.github.io/dm2-lps/';
+
+    var uRows='';
+    Object.keys(ud).sort().forEach(function(u){
+        var d=ud[u];var conv=d.pv>0?((d.wpp+d.quiz)/d.pv*100).toFixed(1):0;
+        var topH=Object.entries(d.headlines).sort(function(a,b){return b[1]-a[1]})[0];
+        var avgS=d.scrolls.length?Math.round(d.scrolls.reduce(function(a,b){return a+b},0)/d.scrolls.length):0;
+        var avgT=d.times.length?Math.round(d.times.reduce(function(a,b){return a+b},0)/d.times.length):0;
+        var bc=parseFloat(conv)>15?'':parseFloat(conv)>5?'mid':'low';
+        var srcTxt=d.pago>0?'<span class="badge-src badge-pago">'+d.pago+' pago</span> ':'';
+        srcTxt+=d.org>0?'<span class="badge-src badge-organico">'+d.org+' org</span>':'';
+        var slug=slugMap[u]||u.toLowerCase().replace(/ /g,'-');
+        var lpUrl=encodeURIComponent(BASE_URL+slug+'/');
+        var clarityHeat='https://clarity.microsoft.com/project/'+CLARITY_ID+'/heatmaps?url='+lpUrl;
+        var clarityRec='https://clarity.microsoft.com/project/'+CLARITY_ID+'/recordings?url='+lpUrl;
+        var clarityBtns='<a href="'+clarityHeat+'" target="_blank" class="clarity-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Heatmap</a> <a href="'+clarityRec+'" target="_blank" class="clarity-btn" style="background:var(--purple)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16"/></svg>Sessões</a>';
+        uRows+='<tr><td><span class="badge-unit">'+u+'</span></td><td>'+d.pv+'</td><td>'+srcTxt+'</td><td>'+d.quiz+'</td><td>'+d.wpp+'</td><td>'+conv+'%<div class="bar"><div class="bar-fill '+bc+'" style="width:'+Math.min(conv*3,100)+'%"></div></div></td><td>'+(topH?topH[0]:'—')+'</td><td>'+avgS+'%</td><td>'+avgT+'s</td><td>'+clarityBtns+'</td></tr>';
+    });
+    document.getElementById('unitTable').innerHTML=uRows||'<tr><td colspan="10" style="text-align:center;padding:32px;color:#999">Nenhum dado ainda.</td></tr>';
+
+    // HEATMAP
+    var secData={};
+    scrolls.forEach(function(e){if(!secData[e.secao])secData[e.secao]={t:0,c:0};secData[e.secao].t+=e.tempo_segundos;secData[e.secao].c++});
+    var maxSec=0;Object.values(secData).forEach(function(v){var a=v.c?v.t/v.c:0;if(a>maxSec)maxSec=a});
+    var hHTML='';
+    ['hero','cuidadora','sintomas','central','equipe','metodo','valor','comp','deps','faq','quiz','ctaf'].forEach(function(s){
+        var d=secData[s];if(!d)return;var avg=Math.round(d.t/d.c);var pct=maxSec>0?avg/maxSec:0;
+        hHTML+='<div class="heat-cell" style="background:rgba(0,161,154,'+Math.max(0.15,pct).toFixed(2)+');color:'+(pct>0.5?'#fff':'#ccc')+'"><div class="heat-val">'+avg+'s</div><div class="heat-lbl">'+s+'</div></div>';
+    });
+    document.getElementById('heatmap').innerHTML=hHTML||'<div style="padding:20px;color:#999">Sem dados de scroll.</div>';
+
+    // TOP CLIQUES
+    var cd={};clicks.forEach(function(e){cd[e.elemento]=(cd[e.elemento]||0)+1});
+    var tc=Object.entries(cd).sort(function(a,b){return b[1]-a[1]}).slice(0,8);
+    var cHTML='';tc.forEach(function(c){cHTML+='<div class="click-card"><div class="cc-name">'+c[0].replace(/_/g,' ')+'</div><div class="cc-count">'+c[1]+'</div></div>'});
+    document.getElementById('clicksGrid').innerHTML=cHTML||'<div style="padding:20px;color:#999">Sem cliques.</div>';
+
+    // HEADLINES
+    var hd={};pv.forEach(function(e){var h=e.headline_param||'default';if(!hd[h])hd[h]={pv:0,wpp:0};hd[h].pv++});
+    wpp.forEach(function(e){var h=e.headline_param||'default';if(hd[h])hd[h].wpp++});
+    var hRows='';Object.entries(hd).sort(function(a,b){return b[1].pv-a[1].pv}).forEach(function(h){
+        var cv=h[1].pv>0?(h[1].wpp/h[1].pv*100).toFixed(1):0;
+        hRows+='<tr><td><strong>'+h[0]+'</strong></td><td>'+h[1].pv+'</td><td>'+h[1].wpp+'</td><td>'+cv+'%</td></tr>';
+    });
+    document.getElementById('headlineTable').innerHTML=hRows||'<tr><td colspan="4" style="text-align:center;padding:20px;color:#999">Sem dados.</td></tr>';
+
+    document.getElementById('periodLabel').textContent=new Date().toLocaleString('pt-BR');
+    document.getElementById('loading').style.display='none';
+    document.getElementById('content').style.display='block';
+}
+
+document.getElementById('filterPeriod').addEventListener('change',loadData);
+document.getElementById('filterUnit').addEventListener('change',loadData);
+setInterval(loadData,60000);
+loadData();
+</script>
+
+</div><!-- /dashContent -->
+<script>if(sessionStorage.getItem('dm2dash')==='ok'){document.getElementById('dashContent').style.display='block'}</script>
+</body>
+</html>

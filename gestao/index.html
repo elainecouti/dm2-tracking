@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DM2 Gestão - Score de Saúde</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--teal:#00A19A;--blue:#1D71B8;--dark:#184341;--txt:#5a5a5a;--light:#F7F8FA;--white:#fff;--green:#22c55e;--red:#ef4444;--orange:#f59e0b;--purple:#8b5cf6}
+        body{font-family:'Montserrat',sans-serif;background:var(--light);color:var(--dark);min-height:100vh}
+
+        .topbar{background:var(--dark);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+        .topbar h1{font-size:18px;font-weight:800;color:#fff}
+        .topbar h1 span{color:var(--teal)}
+        .topbar-right{display:flex;gap:10px;align-items:center}
+        .topbar-link{color:rgba(255,255,255,.5);font-size:12px;text-decoration:none;font-weight:500;transition:color .2s}
+        .topbar-link:hover{color:#fff}
+        .refresh-btn{background:var(--teal);color:#fff;border:none;padding:7px 16px;border-radius:6px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer}
+
+        .container{max-width:1300px;margin:0 auto;padding:20px}
+
+        /* KPIs */
+        .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+        .kpi{background:var(--white);border-radius:10px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+        .kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--txt);margin-bottom:6px}
+        .kpi-value{font-size:28px;font-weight:900;color:var(--dark);line-height:1}
+        .kpi-sub{font-size:11px;color:#999;margin-top:4px}
+        .kpi-value.green{color:var(--green)}.kpi-value.orange{color:var(--orange)}.kpi-value.red{color:var(--red)}.kpi-value.teal{color:var(--teal)}
+
+        /* SCORE GRID */
+        .score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+        .sc{text-align:center;padding:20px 12px;border-radius:12px;border:2px solid #e8e8e8;transition:all .3s;cursor:default}
+        .sc:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+        .sc-score{font-size:36px;font-weight:900;line-height:1}
+        .sc-name{font-size:11px;font-weight:700;color:var(--dark);margin-top:8px}
+        .sc-estado{font-size:10px;color:var(--txt)}
+        .sc-cpl{font-size:12px;font-weight:600;margin-top:4px}
+        .sc-bar{height:4px;border-radius:2px;background:#e8e8e8;margin-top:8px}
+        .sc-bar-fill{height:100%;border-radius:2px;transition:width .5s}
+        .sc-green{border-color:#bbf7d0;background:#f0fdf4}.sc-green .sc-score{color:var(--green)}.sc-green .sc-cpl{color:var(--green)}.sc-green .sc-bar-fill{background:var(--green)}
+        .sc-yellow{border-color:#fef08a;background:#fefce8}.sc-yellow .sc-score{color:var(--orange)}.sc-yellow .sc-cpl{color:var(--orange)}.sc-yellow .sc-bar-fill{background:var(--orange)}
+        .sc-red{border-color:#fecaca;background:#fef2f2}.sc-red .sc-score{color:var(--red)}.sc-red .sc-cpl{color:var(--red)}.sc-red .sc-bar-fill{background:var(--red)}
+
+        /* CARD */
+        .card{background:var(--white);border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.04);overflow:hidden;margin-bottom:20px}
+        .card-head{padding:16px 20px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
+        .card-head h2{font-size:15px;font-weight:700;color:var(--dark)}
+        .card-head span{font-size:11px;color:var(--txt)}
+
+        /* TABLE */
+        table{width:100%;border-collapse:collapse}
+        th{text-align:left;padding:10px 14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--txt);background:var(--light);border-bottom:1px solid #eee}
+        td{padding:10px 14px;font-size:12px;border-bottom:1px solid #f5f5f5;color:#555}
+        tr:hover{background:#fafffe}
+        .badge-unit{background:linear-gradient(135deg,#00A19A,#1D71B8);color:#fff;padding:2px 10px;border-radius:50px;font-size:10px;font-weight:600;white-space:nowrap}
+        .bar{height:5px;border-radius:3px;background:#e8e8e8;min-width:50px}
+        .bar-fill{height:100%;border-radius:3px;transition:width .5s}
+        .bar-green{background:var(--green)}.bar-orange{background:var(--orange)}.bar-red{background:var(--red)}
+
+        .status{display:inline-block;padding:2px 8px;border-radius:50px;font-size:10px;font-weight:700}
+        .status-bom{background:#dcfce7;color:#16a34a}
+        .status-medio{background:#fef9c3;color:#ca8a04}
+        .status-ruim{background:#fee2e2;color:#dc2626}
+        .status-sem{background:#f3f4f6;color:#999}
+
+        /* LEGEND */
+        .legend{display:flex;gap:20px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+        .leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--txt)}
+        .leg-dot{width:12px;height:12px;border-radius:3px}
+        .leg-green{background:#bbf7d0}.leg-yellow{background:#fef08a}.leg-red{background:#fecaca}
+
+        #loading{text-align:center;padding:80px;font-size:13px;color:var(--txt)}
+
+        @media(max-width:768px){
+            .container{padding:12px}
+            .kpis{grid-template-columns:1fr 1fr}
+            .kpi-value{font-size:22px}
+            .score-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+            .sc{padding:14px 8px}
+            .sc-score{font-size:28px}
+            th,td{padding:8px 10px;font-size:11px}
+            .topbar{flex-direction:column;align-items:flex-start}
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--light)">
+    <div style="background:var(--white);border-radius:12px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,.08);max-width:380px;width:100%;text-align:center">
+        <div style="font-size:22px;font-weight:800;margin-bottom:4px;background:linear-gradient(135deg,#00A19A,#1D71B8);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Doutor DM2</div>
+        <div style="font-size:13px;color:var(--txt);margin-bottom:28px">Painel de Gestão</div>
+        <input type="password" id="loginPass" placeholder="Digite a senha" style="width:100%;padding:14px 16px;border:2px solid #e0e0e0;border-radius:8px;font-family:Montserrat,sans-serif;font-size:14px;margin-bottom:12px;text-align:center;outline:none" onfocus="this.style.borderColor='#00A19A'" onblur="this.style.borderColor='#e0e0e0'">
+        <div id="loginError" style="color:#ef4444;font-size:12px;margin-bottom:12px;display:none">Senha incorreta</div>
+        <button onclick="tryLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,#00A19A,#1D71B8);color:#fff;border:none;border-radius:8px;font-family:Montserrat,sans-serif;font-size:14px;font-weight:700;cursor:pointer">Entrar</button>
+    </div>
+</div>
+<script>
+function tryLogin(){
+    if(document.getElementById('loginPass').value==='seven2026'){
+        sessionStorage.setItem('dm2gestao','ok');
+        document.getElementById('loginScreen').style.display='none';
+        document.getElementById('gestaoContent').style.display='block';
+    }else{
+        document.getElementById('loginError').style.display='block';
+        document.getElementById('loginPass').style.borderColor='#ef4444';
+    }
+}
+document.getElementById('loginPass').addEventListener('keypress',function(e){if(e.key==='Enter')tryLogin()});
+if(sessionStorage.getItem('dm2gestao')==='ok')document.getElementById('loginScreen').style.display='none';
+</script>
+
+<div id="gestaoContent" style="display:none">
+
+<div class="topbar">
+    <h1>DM2 <span>Gestão</span></h1>
+    <div class="topbar-right">
+        <a href="../dashboard/" class="topbar-link">Ir pro Tracking Dashboard</a>
+        <button class="refresh-btn" onclick="loadScores()">Atualizar</button>
+    </div>
+</div>
+
+<div class="container">
+    <div id="loading">Carregando scores...</div>
+    <div id="content" style="display:none">
+
+        <!-- KPIs GLOBAIS -->
+        <div class="kpis" id="kpis"></div>
+
+        <!-- LEGENDA -->
+        <div class="legend">
+            <div class="leg-item"><div class="leg-dot leg-green"></div> 80-100: Saudável</div>
+            <div class="leg-item"><div class="leg-dot leg-yellow"></div> 60-79: Atenção</div>
+            <div class="leg-item"><div class="leg-dot leg-red"></div> 0-59: Crítico</div>
+        </div>
+
+        <!-- SCORE GRID -->
+        <div class="score-grid" id="scoreGrid"></div>
+
+        <!-- TABELA COMPLETA -->
+        <div class="card">
+            <div class="card-head"><h2>Detalhamento por Unidade — Últimos 30 dias</h2><span id="updatedAt"></span></div>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead><tr>
+                        <th>Unidade</th>
+                        <th>Score</th>
+                        <th>CPL</th>
+                        <th>Gasto 30d</th>
+                        <th>Leads Meta</th>
+                        <th>Leads Zap</th>
+                        <th>Captura %</th>
+                        <th>Agendamentos</th>
+                        <th>Taxa Agend.</th>
+                        <th>Sem Tag %</th>
+                        <th>Status CPL</th>
+                    </tr></thead>
+                    <tbody id="scoreTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RANKING CPL -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <div class="card">
+                <div class="card-head"><h2>Melhor CPL</h2></div>
+                <div id="bestCpl" style="padding:20px"></div>
+            </div>
+            <div class="card">
+                <div class="card-head"><h2>Pior CPL</h2></div>
+                <div id="worstCpl" style="padding:20px"></div>
+            </div>
+        </div>
+
+        <!-- ALERTAS -->
+        <div class="card" id="alertCard">
+            <div class="card-head"><h2>Alertas</h2></div>
+            <div id="alerts" style="padding:20px"></div>
+        </div>
+
+    </div>
+</div>
+
+</div><!-- /gestaoContent -->
+<script>if(sessionStorage.getItem('dm2gestao')==='ok')document.getElementById('gestaoContent').style.display='block'</script>
+
+<script>
+var SUPA='https://eeakqgsnhbrzvkwskkgv.supabase.co';
+var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlYWtxZ3NuaGJyenZrd3Nra2d2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MzEzMDgsImV4cCI6MjA4OTUwNzMwOH0.qA5ZbZPxmq62affukWSQT58lmnqaWI1_OWYTCoCfoks';
+
+function q(table,query){return fetch(SUPA+'/rest/v1/'+table+'?'+query,{headers:{'apikey':KEY,'Authorization':'Bearer '+KEY}}).then(function(r){return r.json()})}
+
+async function loadScores(){
+    document.getElementById('loading').style.display='block';
+    document.getElementById('content').style.display='none';
+
+    var scores=await q('health_scores','select=*&order=score.desc');
+    if(!scores||!scores.length){
+        document.getElementById('loading').textContent='Nenhum dado. Execute python3 health_score.py primeiro.';
+        return;
+    }
+
+    // KPIs globais
+    var totalGasto=0,totalLeads=0,totalAgend=0,totalUnidades=scores.length;
+    var scoresArr=[];
+    scores.forEach(function(s){
+        totalGasto+=parseFloat(s.gasto)||0;
+        totalLeads+=s.leads_meta||0;
+        totalAgend+=s.agendamentos||0;
+        scoresArr.push(s.score);
+    });
+    var avgScore=Math.round(scoresArr.reduce(function(a,b){return a+b},0)/scoresArr.length);
+    var avgCpl=totalLeads>0?(totalGasto/totalLeads):0;
+    var saudaveis=scoresArr.filter(function(s){return s>=80}).length;
+    var atencao=scoresArr.filter(function(s){return s>=60&&s<80}).length;
+    var criticos=scoresArr.filter(function(s){return s<60}).length;
+
+    document.getElementById('kpis').innerHTML=
+        '<div class="kpi"><div class="kpi-label">Unidades</div><div class="kpi-value teal">'+totalUnidades+'</div><div class="kpi-sub">monitoradas</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Score Médio</div><div class="kpi-value '+(avgScore>=80?'green':(avgScore>=60?'orange':'red'))+'">'+avgScore+'</div><div class="kpi-sub">de 100</div></div>'+
+        '<div class="kpi"><div class="kpi-label">CPL Médio Rede</div><div class="kpi-value">R$'+avgCpl.toFixed(2)+'</div><div class="kpi-sub">últimos 30 dias</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Gasto Total</div><div class="kpi-value">R$'+(totalGasto/1000).toFixed(1)+'k</div><div class="kpi-sub">últimos 30 dias</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Leads Total</div><div class="kpi-value teal">'+totalLeads.toLocaleString('pt-BR')+'</div><div class="kpi-sub">conversas iniciadas</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Agendamentos</div><div class="kpi-value green">'+totalAgend+'</div><div class="kpi-sub">no ZapClinic</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Saudáveis</div><div class="kpi-value green">'+saudaveis+'</div><div class="kpi-sub">score 80+</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Críticos</div><div class="kpi-value red">'+criticos+'</div><div class="kpi-sub">score &lt;60</div></div>';
+
+    // Score grid
+    var gridHTML='';
+    scores.forEach(function(s){
+        var cls=s.score>=80?'sc-green':(s.score>=60?'sc-yellow':'sc-red');
+        gridHTML+='<div class="sc '+cls+'">'+
+            '<div class="sc-score">'+s.score+'</div>'+
+            '<div class="sc-name">'+s.unidade+'</div>'+
+            '<div class="sc-estado">'+s.estado+'</div>'+
+            '<div class="sc-cpl">CPL R$'+(parseFloat(s.cpl)||0).toFixed(2)+'</div>'+
+            '<div class="sc-bar"><div class="sc-bar-fill" style="width:'+s.score+'%"></div></div>'+
+            '</div>';
+    });
+    document.getElementById('scoreGrid').innerHTML=gridHTML;
+
+    // Tabela
+    var tHTML='';
+    scores.forEach(function(s){
+        var cpl=parseFloat(s.cpl)||0;
+        var barCls=s.score>=80?'bar-green':(s.score>=60?'bar-orange':'bar-red');
+        var statusCls=cpl<15?'status-bom':(cpl<20?'status-medio':(cpl>0?'status-ruim':'status-sem'));
+        var statusTxt=cpl<15?'Bom':(cpl<20?'Médio':(cpl>0?'Alto':'—'));
+        tHTML+='<tr>'+
+            '<td><span class="badge-unit">'+s.unidade+'</span></td>'+
+            '<td><strong>'+s.score+'</strong>/100 <div class="bar"><div class="bar-fill '+barCls+'" style="width:'+s.score+'%"></div></div></td>'+
+            '<td>R$'+cpl.toFixed(2)+'</td>'+
+            '<td>R$'+(parseFloat(s.gasto)||0).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})+'</td>'+
+            '<td>'+s.leads_meta+'</td>'+
+            '<td>'+s.leads_zap+'</td>'+
+            '<td>'+s.captura_pct+'%</td>'+
+            '<td>'+s.agendamentos+'</td>'+
+            '<td>'+s.taxa_agendamento+'%</td>'+
+            '<td>'+(parseFloat(s.pct_sem_tag)||0).toFixed(0)+'%</td>'+
+            '<td><span class="status '+statusCls+'">'+statusTxt+'</span></td>'+
+            '</tr>';
+    });
+    document.getElementById('scoreTable').innerHTML=tHTML;
+
+    // Best/Worst CPL
+    var sorted=[...scores].filter(function(s){return parseFloat(s.cpl)>0}).sort(function(a,b){return parseFloat(a.cpl)-parseFloat(b.cpl)});
+    var bestHTML='';
+    sorted.slice(0,5).forEach(function(s,i){
+        bestHTML+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0"><div><strong style="color:var(--green)">#'+(i+1)+'</strong> '+s.unidade+'</div><div style="font-weight:700;color:var(--green)">R$'+(parseFloat(s.cpl)).toFixed(2)+'</div></div>';
+    });
+    document.getElementById('bestCpl').innerHTML=bestHTML;
+
+    var worstHTML='';
+    sorted.slice(-5).reverse().forEach(function(s,i){
+        worstHTML+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0"><div><strong style="color:var(--red)">#'+(i+1)+'</strong> '+s.unidade+'</div><div style="font-weight:700;color:var(--red)">R$'+(parseFloat(s.cpl)).toFixed(2)+'</div></div>';
+    });
+    document.getElementById('worstCpl').innerHTML=worstHTML;
+
+    // Alertas
+    var alertHTML='';
+    scores.forEach(function(s){
+        if(s.score<60)alertHTML+='<div style="padding:8px 12px;margin-bottom:8px;border-radius:6px;background:#fef2f2;border-left:3px solid var(--red);font-size:13px"><strong>'+s.unidade+'</strong> — Score crítico ('+s.score+'/100). CPL R$'+(parseFloat(s.cpl)).toFixed(2)+', '+s.agendamentos+' agendamentos.</div>';
+        if(parseFloat(s.pct_sem_tag)>50)alertHTML+='<div style="padding:8px 12px;margin-bottom:8px;border-radius:6px;background:#fefce8;border-left:3px solid var(--orange);font-size:13px"><strong>'+s.unidade+'</strong> — '+(parseFloat(s.pct_sem_tag)).toFixed(0)+'% dos leads sem classificação. SDR precisa taguear.</div>';
+        if(parseFloat(s.cpl)>20)alertHTML+='<div style="padding:8px 12px;margin-bottom:8px;border-radius:6px;background:#fef2f2;border-left:3px solid var(--red);font-size:13px"><strong>'+s.unidade+'</strong> — CPL acima de R$20 (R$'+(parseFloat(s.cpl)).toFixed(2)+'). Revisar segmentação e criativos.</div>';
+        if(s.taxa_agendamento<5&&s.leads_zap>10)alertHTML+='<div style="padding:8px 12px;margin-bottom:8px;border-radius:6px;background:#fefce8;border-left:3px solid var(--orange);font-size:13px"><strong>'+s.unidade+'</strong> — Taxa de agendamento muito baixa ('+s.taxa_agendamento+'%). Verificar SDR e tempo de resposta.</div>';
+    });
+    if(!alertHTML)alertHTML='<div style="padding:16px;color:#999;text-align:center">Nenhum alerta no momento.</div>';
+    document.getElementById('alerts').innerHTML=alertHTML;
+
+    document.getElementById('updatedAt').textContent='Atualizado: '+new Date().toLocaleString('pt-BR');
+    document.getElementById('loading').style.display='none';
+    document.getElementById('content').style.display='block';
+}
+
+loadScores();
+</script>
+
+</body>
+</html>
