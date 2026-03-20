@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DM2 Tracking Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--teal:#00A19A;--blue:#1D71B8;--dark:#184341;--txt:#5a5a5a;--light:#F7F8FA;--white:#fff;--green:#22c55e;--red:#ef4444;--orange:#f59e0b;--purple:#8b5cf6}
@@ -65,6 +68,21 @@
         .map-legend-bar{width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#e8eef1,#b2dfdb,#4db6ac,#00897b,#00A19A)}
         .map-pulse{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--green);animation:mapPulse 2s infinite;pointer-events:none}
         @keyframes mapPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(3);opacity:0}}
+
+        /* MAPA CIDADES - Leaflet */
+        .map-toggle{display:flex;gap:4px;background:var(--light);border-radius:6px;padding:2px}
+        .map-toggle button{padding:5px 12px;border:none;border-radius:5px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;cursor:pointer;background:transparent;color:var(--txt);transition:all .2s}
+        .map-toggle button.active{background:var(--teal);color:#fff}
+        #cityMapContainer{display:none;height:420px;border-radius:8px;overflow:hidden;margin:0 20px 20px}
+        #heatMapContainer{display:none;height:420px;border-radius:8px;overflow:hidden;margin:0 20px}
+        .city-table{max-height:260px;overflow-y:auto;padding:0 20px 20px}
+        .city-table table{width:100%}
+        .city-rank{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;text-align:center;line-height:22px;font-size:10px;font-weight:700}
+        .heat-legend{display:flex;align-items:center;gap:12px;padding:12px 20px;font-size:11px;color:var(--txt)}
+        .heat-legend-bar{width:120px;height:10px;border-radius:5px;background:linear-gradient(90deg,rgba(0,161,154,.1),rgba(0,161,154,.4),#00A19A,#f59e0b,#ef4444)}
+        .heat-stats{display:flex;gap:16px;padding:0 20px 16px;flex-wrap:wrap}
+        .heat-stat{background:var(--light);border-radius:8px;padding:10px 16px;font-size:11px}
+        .heat-stat strong{font-size:18px;font-weight:800;color:var(--teal);display:block}
 
         /* LIVE FEED */
         .feed{max-height:400px;overflow-y:auto;padding:0}
@@ -188,14 +206,57 @@ if(sessionStorage.getItem('dm2dash')==='ok'){
         <div class="grid-3">
             <!-- MAPA DO BRASIL -->
             <div class="card">
-                <div class="card-head"><h2>Mapa de Acessos por Estado</h2><span id="mapLabel"></span></div>
-                <div class="map-container" id="mapContainer">
-                    <div id="mapHolder"></div>
-                    <div class="map-tooltip" id="mapTooltip"></div>
-                    <div class="map-legend">
-                        <span>Menor</span>
-                        <div class="map-legend-bar"></div>
-                        <span>Maior</span>
+                <div class="card-head">
+                    <h2>Mapa de Acessos</h2>
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <span id="mapLabel"></span>
+                        <div class="map-toggle">
+                            <button class="active" onclick="toggleMapView('estado')">Estado</button>
+                            <button onclick="toggleMapView('cidade')">Cidades</button>
+                            <button onclick="toggleMapView('heatmap')">Heatmap Local</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Vista por Estado (SVG) -->
+                <div id="estadoView">
+                    <div class="map-container" id="mapContainer">
+                        <div id="mapHolder"></div>
+                        <div class="map-tooltip" id="mapTooltip"></div>
+                        <div class="map-legend">
+                            <span>Menor</span>
+                            <div class="map-legend-bar"></div>
+                            <span>Maior</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Vista por Cidade (Leaflet + tabela) -->
+                <div id="cidadeView" style="display:none">
+                    <div id="cityMapContainer"></div>
+                    <div class="city-table">
+                        <table>
+                            <thead><tr><th>#</th><th>Cidade</th><th>Estado</th><th>Acessos</th><th>% do Total</th></tr></thead>
+                            <tbody id="cityTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Vista Heatmap Local (calor por geolocalização dentro da cidade) -->
+                <div id="heatmapView" style="display:none">
+                    <div id="heatMapNotice" style="padding:16px 20px;font-size:12px;color:var(--txt)">
+                        Selecione uma unidade no filtro acima para ver o mapa de calor local.
+                    </div>
+                    <div id="heatMapContainer"></div>
+                    <div class="heat-stats" id="heatStats"></div>
+                    <div class="heat-legend" id="heatLegend" style="display:none">
+                        <span>Frio</span>
+                        <div class="heat-legend-bar"></div>
+                        <span>Quente</span>
+                        <span style="margin-left:12px">Cada ponto = 1 acesso real por IP</span>
+                    </div>
+                    <div class="city-table">
+                        <table>
+                            <thead><tr><th>#</th><th>Bairro/Região</th><th>Acessos</th><th>WPP Clicks</th><th>Conversão</th></tr></thead>
+                            <tbody id="heatTable"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -260,6 +321,179 @@ if(sessionStorage.getItem('dm2dash')==='ok'){
 <script>
 var SUPA='https://eeakqgsnhbrzvkwskkgv.supabase.co';
 var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlYWtxZ3NuaGJyenZrd3Nra2d2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MzEzMDgsImV4cCI6MjA4OTUwNzMwOH0.qA5ZbZPxmq62affukWSQT58lmnqaWI1_OWYTCoCfoks';
+
+// ── Toggle Estado/Cidade/Heatmap ──
+var cityMap=null;var cityMarkers=[];var _pendingCityData=null;
+var heatMap=null;var heatLayer=null;var heatMarkers=[];var _pendingHeatData=null;
+
+function toggleMapView(view){
+    document.querySelectorAll('.map-toggle button').forEach(function(b){b.classList.remove('active')});
+    event.target.classList.add('active');
+    document.getElementById('estadoView').style.display=view==='estado'?'block':'none';
+    document.getElementById('cidadeView').style.display=view==='cidade'?'block':'none';
+    document.getElementById('heatmapView').style.display=view==='heatmap'?'block':'none';
+    if(view==='cidade'){
+        document.getElementById('cityMapContainer').style.display='block';
+        if(!cityMap){
+            cityMap=L.map('cityMapContainer').setView([-14.2,-51.9],4);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OSM',maxZoom:18}).addTo(cityMap);
+        }
+        setTimeout(function(){
+            cityMap.invalidateSize();
+            if(_pendingCityData){updateCityMap(_pendingCityData);_pendingCityData=null}
+        },150);
+    }
+    if(view==='heatmap'){
+        var unit=document.getElementById('filterUnit').value;
+        if(unit==='all'){
+            document.getElementById('heatMapNotice').style.display='block';
+            document.getElementById('heatMapContainer').style.display='none';
+            document.getElementById('heatLegend').style.display='none';
+        }else{
+            document.getElementById('heatMapNotice').style.display='none';
+            document.getElementById('heatMapContainer').style.display='block';
+            document.getElementById('heatLegend').style.display='flex';
+            if(!heatMap){
+                heatMap=L.map('heatMapContainer').setView([-14.2,-51.9],12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OSM',maxZoom:19}).addTo(heatMap);
+            }
+            setTimeout(function(){
+                heatMap.invalidateSize();
+                if(_pendingHeatData){updateHeatMap(_pendingHeatData.pv,_pendingHeatData.wpp);_pendingHeatData=null}
+            },150);
+        }
+    }
+}
+
+function updateHeatMap(pageviews,wppClicks){
+    if(!heatMap){_pendingHeatData={pv:pageviews,wpp:wppClicks};return;}
+
+    // Limpar camadas anteriores
+    if(heatLayer){heatMap.removeLayer(heatLayer);heatLayer=null}
+    heatMarkers.forEach(function(m){heatMap.removeLayer(m)});
+    heatMarkers=[];
+
+    var unit=document.getElementById('filterUnit').value;
+    if(unit==='all')return;
+
+    // Filtrar por unidade selecionada
+    var pvUnit=pageviews.filter(function(e){return e.unidade===unit&&e.lat&&e.lon});
+    var wppUnit=wppClicks.filter(function(e){return e.unidade===unit});
+    // Criar set de sessions que clicaram WPP
+    var wppSessions={};
+    wppUnit.forEach(function(e){wppSessions[e.session_id]=true});
+
+    if(!pvUnit.length){
+        document.getElementById('heatStats').innerHTML='<div class="heat-stat">Sem dados de geolocalização para '+unit+'</div>';
+        document.getElementById('heatTable').innerHTML='';
+        return;
+    }
+
+    // Heatmap layer (calor)
+    var heatPoints=[];
+    pvUnit.forEach(function(e){
+        var lat=parseFloat(e.lat),lon=parseFloat(e.lon);
+        if(!isNaN(lat)&&!isNaN(lon)){
+            var intensity=wppSessions[e.session_id]?1.5:0.8;
+            heatPoints.push([lat,lon,intensity]);
+        }
+    });
+    heatLayer=L.heatLayer(heatPoints,{radius:25,blur:20,maxZoom:17,gradient:{0.2:'#00A19A',0.4:'#4db6ac',0.6:'#f59e0b',0.8:'#ef4444',1:'#dc2626'}}).addTo(heatMap);
+
+    // Pins individuais para WPP clicks (conversões)
+    pvUnit.forEach(function(e){
+        var lat=parseFloat(e.lat),lon=parseFloat(e.lon);
+        if(isNaN(lat)||isNaN(lon))return;
+        var isWpp=wppSessions[e.session_id];
+        var color=isWpp?'#22c55e':'#00A19A';
+        var radius=isWpp?7:4;
+        var opacity=isWpp?0.95:0.5;
+        var marker=L.circleMarker([lat,lon],{
+            radius:radius,fillColor:color,color:'#fff',weight:1.5,opacity:1,fillOpacity:opacity
+        }).addTo(heatMap);
+        var ts=e.created_at?new Date(e.created_at).toLocaleString('pt-BR'):'';
+        var popup='<strong>'+(e.cidade_real||'')+'</strong>'+(e.estado_real?' ('+e.estado_real+')':'')+'<br>'+
+            (isWpp?'<span style="color:#22c55e;font-weight:700">★ Clicou WhatsApp</span><br>':'')+
+            '<span style="font-size:11px;color:#999">'+e.device+' | '+e.traffic_source+'<br>'+ts+'</span>';
+        marker.bindPopup(popup);
+        heatMarkers.push(marker);
+    });
+
+    // Fit bounds
+    var bounds=L.latLngBounds(pvUnit.map(function(e){return[parseFloat(e.lat),parseFloat(e.lon)]}));
+    heatMap.fitBounds(bounds.pad(0.15));
+
+    // Stats
+    var totalPv=pvUnit.length;
+    var totalWpp=pvUnit.filter(function(e){return wppSessions[e.session_id]}).length;
+    var convRate=totalPv>0?(totalWpp/totalPv*100).toFixed(1):0;
+    var devices={};pvUnit.forEach(function(e){var d=e.device||'?';devices[d]=(devices[d]||0)+1});
+    var topDevice=Object.entries(devices).sort(function(a,b){return b[1]-a[1]})[0];
+
+    document.getElementById('heatStats').innerHTML=
+        '<div class="heat-stat"><strong>'+totalPv+'</strong>acessos geolocalizados</div>'+
+        '<div class="heat-stat"><strong style="color:#22c55e">'+totalWpp+'</strong>clicaram WhatsApp</div>'+
+        '<div class="heat-stat"><strong>'+convRate+'%</strong>taxa conversão</div>'+
+        '<div class="heat-stat"><strong>'+((topDevice&&topDevice[0])||'?')+'</strong>dispositivo principal ('+(topDevice?topDevice[1]:0)+')</div>';
+
+    // Tabela agrupada por cidade_real (funciona como "bairro" em nível local)
+    var regioes={};
+    pvUnit.forEach(function(e){
+        var key=e.cidade_real||'Desconhecido';
+        if(!regioes[key])regioes[key]={count:0,wpp:0};
+        regioes[key].count++;
+        if(wppSessions[e.session_id])regioes[key].wpp++;
+    });
+    var regList=Object.entries(regioes).sort(function(a,b){return b[1].count-a[1].count});
+    var tHTML='';
+    regList.forEach(function(r,i){
+        var conv=r[1].count>0?(r[1].wpp/r[1].count*100).toFixed(1):'0';
+        tHTML+='<tr><td><span class="city-rank">'+(i+1)+'</span></td><td><strong>'+r[0]+'</strong></td><td>'+r[1].count+'</td><td>'+r[1].wpp+'</td><td>'+conv+'%</td></tr>';
+    });
+    document.getElementById('heatTable').innerHTML=tHTML||'<tr><td colspan="5" style="text-align:center;padding:20px;color:#999">Sem dados.</td></tr>';
+}
+
+function updateCityMap(pageviews){
+    if(!cityMap){_pendingCityData=pageviews;return;}
+    // Limpar markers anteriores
+    cityMarkers.forEach(function(m){cityMap.removeLayer(m)});
+    cityMarkers=[];
+    // Agrupar por cidade_real
+    var cidades={};
+    pageviews.forEach(function(e){
+        if(!e.cidade_real||!e.lat||!e.lon)return;
+        var key=e.cidade_real+'|'+(e.estado_real||'');
+        if(!cidades[key])cidades[key]={nome:e.cidade_real,estado:e.estado_real||'',lat:parseFloat(e.lat),lon:parseFloat(e.lon),count:0};
+        cidades[key].count++;
+    });
+    var lista=Object.values(cidades).sort(function(a,b){return b.count-a.count});
+    var maxC=lista.length?lista[0].count:1;
+    var total=pageviews.filter(function(e){return e.cidade_real}).length||1;
+
+    // Adicionar markers com tamanho proporcional
+    lista.forEach(function(c){
+        var radius=Math.max(6,Math.min(30,c.count/maxC*30));
+        var marker=L.circleMarker([c.lat,c.lon],{
+            radius:radius,fillColor:'#00A19A',color:'#fff',weight:2,opacity:1,fillOpacity:0.7
+        }).addTo(cityMap);
+        marker.bindPopup('<strong>'+c.nome+'</strong> ('+c.estado+')<br><span style="font-size:18px;font-weight:800;color:#00A19A">'+c.count+'</span> acessos');
+        cityMarkers.push(marker);
+    });
+
+    // Tabela de cidades
+    var tHTML='';
+    lista.slice(0,30).forEach(function(c,i){
+        var pct=(c.count/total*100).toFixed(1);
+        tHTML+='<tr><td><span class="city-rank">'+(i+1)+'</span></td><td><strong>'+c.nome+'</strong></td><td>'+c.estado+'</td><td>'+c.count+'</td><td>'+pct+'%</td></tr>';
+    });
+    document.getElementById('cityTable').innerHTML=tHTML||'<tr><td colspan="5" style="text-align:center;padding:20px;color:#999">Sem dados de geolocalização.</td></tr>';
+
+    // Fit bounds se tiver dados
+    if(cityMarkers.length){
+        var group=L.featureGroup(cityMarkers);
+        cityMap.fitBounds(group.getBounds().pad(0.1));
+    }
+}
 
 // Nomes dos estados
 var estadoNomes={AC:'Acre',AL:'Alagoas',AM:'Amazonas',AP:'Amapa',BA:'Bahia',CE:'Ceara',DF:'Distrito Federal',ES:'Espirito Santo',GO:'Goias',MA:'Maranhao',MG:'Minas Gerais',MS:'Mato Grosso do Sul',MT:'Mato Grosso',PA:'Para',PB:'Paraiba',PE:'Pernambuco',PI:'Piaui',PR:'Parana',RJ:'Rio de Janeiro',RN:'Rio Grande do Norte',RO:'Rondonia',RR:'Roraima',RS:'Rio Grande do Sul',SC:'Santa Catarina',SE:'Sergipe',SP:'Sao Paulo',TO:'Tocantins'};
@@ -329,6 +563,10 @@ async function loadData(){
     var pv=pageEvents.filter(function(e){return e.evento==='pageview'});
     var wpp=pageEvents.filter(function(e){return e.evento==='whatsapp_click'});
     var exits=pageEvents.filter(function(e){return e.evento==='exit'});
+
+    // Atualizar mapas de cidades e heatmap
+    updateCityMap(pv);
+    updateHeatMap(pv,wpp);
 
     // Unit filter populate
     var unitSel=document.getElementById('filterUnit');var curVal=unitSel.value;
