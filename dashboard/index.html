@@ -636,7 +636,9 @@ async function loadData(){
         chHtml+='<tr style="border-bottom:1px solid #f0f0f0"><td style="padding:8px">'+bar+'<span style="font-weight:600">'+c.name+'</span></td><td style="text-align:right;padding:8px;font-weight:700">'+c.visits+'</td><td style="text-align:right;padding:8px;color:#888">'+pct+'%</td><td style="text-align:right;padding:8px;font-weight:700;color:'+c.color+'">'+c.conv+'</td><td style="text-align:right;padding:8px">'+convPct+'%</td></tr>';
     });
     chHtml+='</table></div>';
-    document.getElementById('kpis').insertAdjacentHTML('afterend',chHtml);
+    var chContainer=document.getElementById('channelsTable');
+    if(!chContainer){chContainer=document.createElement('div');chContainer.id='channelsTable';document.getElementById('kpis').insertAdjacentElement('afterend',chContainer)}
+    chContainer.innerHTML=chHtml;
 
     // MAPA - colorir estados estilo Google Analytics (gradiente de intensidade)
     var estadoCount={};
@@ -767,6 +769,51 @@ async function loadData(){
     document.getElementById('periodLabel').textContent=new Date().toLocaleString('pt-BR');
     document.getElementById('loading').style.display='none';
     document.getElementById('content').style.display='block';
+
+    // SEARCH CONSOLE DATA
+    loadSearchConsole();
+}
+
+async function loadSearchConsole(){
+    try{
+        var resp=await fetch('search-console-data.json?t='+Date.now());
+        if(!resp.ok){document.getElementById('seoSection').style.display='none';return}
+        var d=await resp.json();
+        if(!d||!d.summary){document.getElementById('seoSection').style.display='none';return}
+        document.getElementById('seoSection').style.display='block';
+
+        var s=d.summary;
+        var updated=d.updated_at?new Date(d.updated_at).toLocaleString('pt-BR'):'--';
+
+        // KPIs
+        document.getElementById('seoKpis').innerHTML=
+            '<div class="kpi"><div class="kpi-label">Cliques (7d)</div><div class="kpi-value green">'+s.clicks_7d+'</div><div class="kpi-sub">organico Google</div></div>'+
+            '<div class="kpi"><div class="kpi-label">Impressoes (7d)</div><div class="kpi-value teal">'+(s.impressions_7d||0).toLocaleString()+'</div><div class="kpi-sub">vezes exibido</div></div>'+
+            '<div class="kpi"><div class="kpi-label">CTR</div><div class="kpi-value '+(s.ctr_7d>3?'green':'orange')+'">'+s.ctr_7d+'%</div><div class="kpi-sub">click-through rate</div></div>'+
+            '<div class="kpi"><div class="kpi-label">Posicao Media</div><div class="kpi-value '+(s.avg_position_7d<20?'green':'orange')+'">'+s.avg_position_7d+'</div><div class="kpi-sub">no Google</div></div>'+
+            '<div class="kpi"><div class="kpi-label">Cliques (30d)</div><div class="kpi-value">'+s.clicks_30d+'</div><div class="kpi-sub">ultimo mes</div></div>'+
+            '<div class="kpi"><div class="kpi-label">Termos</div><div class="kpi-value">'+s.total_queries+'</div><div class="kpi-sub">buscas diferentes</div></div>';
+
+        // Top termos
+        var qRows='';
+        (d.top_queries||[]).slice(0,15).forEach(function(q){
+            qRows+='<tr><td><strong>'+q.query+'</strong></td><td>'+q.clicks+'</td><td>'+q.impressions+'</td><td>'+q.ctr+'%</td><td>'+q.position+'</td></tr>';
+        });
+        document.getElementById('seoQueries').innerHTML=qRows||'<tr><td colspan="5" style="text-align:center;padding:20px;color:#999">Dados aparecem em 2-3 dias apos indexacao.</td></tr>';
+
+        // Top páginas
+        var pRows='';
+        (d.top_pages||[]).slice(0,10).forEach(function(p){
+            var name=p.page.replace(/\//g,'').replace('mulheres',' (M)')||'home';
+            pRows+='<tr><td><strong>'+name+'</strong></td><td>'+p.clicks+'</td><td>'+p.impressions+'</td><td>'+p.ctr+'%</td><td>'+p.position+'</td></tr>';
+        });
+        document.getElementById('seoPages').innerHTML=pRows||'<tr><td colspan="5" style="text-align:center;padding:20px;color:#999">Aguardando indexacao.</td></tr>';
+
+        document.getElementById('seoUpdated').textContent='Atualizado: '+updated;
+
+    }catch(e){
+        document.getElementById('seoSection').style.display='none';
+    }
 }
 
 document.getElementById('filterPeriod').addEventListener('change',loadData);
@@ -774,6 +821,42 @@ document.getElementById('filterUnit').addEventListener('change',loadData);
 setInterval(loadData,60000);
 loadData();
 </script>
+
+<!-- SEARCH CONSOLE / SEO -->
+<div id="seoSection" style="display:none;margin-top:24px">
+    <div class="card" style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h3 style="margin:0;font-size:16px;font-weight:800">🔍 Google Search Console — SEO Organico</h3>
+            <span id="seoUpdated" style="font-size:11px;color:#999"></span>
+        </div>
+        <div id="seoKpis" class="kpis" style="margin-bottom:16px"></div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3 style="margin:0 0 12px;font-size:14px;font-weight:700">Top Termos de Busca</h3>
+            <div style="overflow-x:auto"><table style="width:100%;font-size:12px;border-collapse:collapse">
+                <thead><tr style="border-bottom:2px solid #e0e0e0;text-align:left">
+                    <th style="padding:6px 8px">Termo</th><th style="padding:6px 8px;text-align:right">Cliques</th>
+                    <th style="padding:6px 8px;text-align:right">Impressoes</th><th style="padding:6px 8px;text-align:right">CTR</th>
+                    <th style="padding:6px 8px;text-align:right">Posicao</th>
+                </tr></thead>
+                <tbody id="seoQueries"></tbody>
+            </table></div>
+        </div>
+        <div class="card">
+            <h3 style="margin:0 0 12px;font-size:14px;font-weight:700">Top Paginas</h3>
+            <div style="overflow-x:auto"><table style="width:100%;font-size:12px;border-collapse:collapse">
+                <thead><tr style="border-bottom:2px solid #e0e0e0;text-align:left">
+                    <th style="padding:6px 8px">Pagina</th><th style="padding:6px 8px;text-align:right">Cliques</th>
+                    <th style="padding:6px 8px;text-align:right">Impressoes</th><th style="padding:6px 8px;text-align:right">CTR</th>
+                    <th style="padding:6px 8px;text-align:right">Posicao</th>
+                </tr></thead>
+                <tbody id="seoPages"></tbody>
+            </table></div>
+        </div>
+    </div>
+</div>
 
 </div><!-- /dashContent -->
 <script>if(sessionStorage.getItem('dm2dash')==='ok'){document.getElementById('dashContent').style.display='block'}</script>
