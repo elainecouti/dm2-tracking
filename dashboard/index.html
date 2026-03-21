@@ -552,10 +552,11 @@ async function loadData(){
     document.getElementById('content').style.display='none';
     var df=getDateFilter(),uf=getUnitFilter();
 
+    var devF='&device=eq.mobile';
     var [pageEvents,clicks,scrolls,quizLeads]=await Promise.all([
-        q('page_events','select=*&order=created_at.desc&limit=5000'+df+uf),
-        q('click_events','select=*&order=created_at.desc&limit=5000'+df+uf),
-        q('scroll_events','select=*&order=created_at.desc&limit=5000'+df+uf),
+        q('page_events','select=*&order=created_at.desc&limit=5000'+df+uf+devF),
+        q('click_events','select=*&order=created_at.desc&limit=5000'+df+uf+devF),
+        q('scroll_events','select=*&order=created_at.desc&limit=5000'+df+uf+devF),
         q('quiz_leads','select=*&order=created_at.desc&limit=5000'+df+uf)
     ]);
 
