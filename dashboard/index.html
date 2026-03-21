@@ -598,16 +598,45 @@ async function loadData(){
     var soc=pv.filter(function(e){return e.traffic_source==='social_organico'}).length;
     var ref=pv.filter(function(e){return e.traffic_source==='referral'}).length;
 
+    // Conversões por fonte (wpp + quiz por traffic_source)
+    var allConv=wpp.concat(quizLeads);
+    var convPago=allConv.filter(function(e){return e.traffic_source==='pago'}).length;
+    var convOrg=allConv.filter(function(e){return e.traffic_source==='organico'}).length;
+    var convSoc=allConv.filter(function(e){return e.traffic_source==='social_organico'}).length;
+    var convDir=allConv.filter(function(e){return e.traffic_source==='direto'||!e.traffic_source}).length;
+
     // KPIs
     document.getElementById('kpis').innerHTML=
         '<div class="kpi"><div class="kpi-label">Pageviews</div><div class="kpi-value teal">'+pv.length+'</div><div class="kpi-sub">'+sessions+' sessoes</div></div>'+
-        '<div class="kpi"><div class="kpi-label">Trafego Pago</div><div class="kpi-value purple">'+pago+'</div><div class="kpi-sub">'+(pv.length?Math.round(pago/pv.length*100):0)+'% do total</div></div>'+
-        '<div class="kpi"><div class="kpi-label">Organico + Social</div><div class="kpi-value green">'+(org+soc)+'</div><div class="kpi-sub">'+(pv.length?Math.round((org+soc)/pv.length*100):0)+'%</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Trafego Pago</div><div class="kpi-value purple">'+pago+'</div><div class="kpi-sub">'+convPago+' conversoes</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Google Organico</div><div class="kpi-value green">'+org+'</div><div class="kpi-sub">'+convOrg+' conversoes</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Social Organico</div><div class="kpi-value blue">'+(soc)+'</div><div class="kpi-sub">'+convSoc+' conversoes</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Direto</div><div class="kpi-value">'+dir+'</div><div class="kpi-sub">'+convDir+' conversoes</div></div>'+
         '<div class="kpi"><div class="kpi-label">Quiz Leads</div><div class="kpi-value green">'+quizLeads.length+'</div><div class="kpi-sub">Formularios</div></div>'+
         '<div class="kpi"><div class="kpi-label">WPP Clicks</div><div class="kpi-value green">'+wpp.length+'</div><div class="kpi-sub">Botao WhatsApp</div></div>'+
         '<div class="kpi"><div class="kpi-label">Conv. Rate</div><div class="kpi-value '+(parseFloat(convRate)>10?'green':'orange')+'">'+convRate+'%</div><div class="kpi-sub">(quiz+wpp)/sessoes</div></div>'+
-        '<div class="kpi"><div class="kpi-label">Scroll Medio</div><div class="kpi-value">'+avgScroll+'%</div><div class="kpi-sub">Profundidade</div></div>'+
-        '<div class="kpi"><div class="kpi-label">Tempo Medio</div><div class="kpi-value">'+avgTime+'s</div><div class="kpi-sub">Na pagina</div></div>';
+        '<div class="kpi"><div class="kpi-label">Tempo Medio</div><div class="kpi-value">'+avgTime+'s</div><div class="kpi-sub">Scroll '+avgScroll+'%</div></div>';
+
+    // TABELA DE CANAIS DE AQUISIÇÃO
+    var channels=[
+        {name:'Meta Ads (Pago)',visits:pago,conv:convPago,color:'#8b5cf6'},
+        {name:'Google Organico',visits:org,conv:convOrg,color:'#22c55e'},
+        {name:'Social Organico',visits:soc,conv:convSoc,color:'#3b82f6'},
+        {name:'Direto',visits:dir,conv:convDir,color:'#6b7280'},
+        {name:'Referral',visits:ref,conv:0,color:'#f59e0b'}
+    ].filter(function(c){return c.visits>0});
+
+    var chHtml='<div class="card" style="margin-bottom:16px"><h3 style="margin:0 0 12px;font-size:14px;font-weight:700">Canais de Aquisicao</h3><table style="width:100%;font-size:13px;border-collapse:collapse">';
+    chHtml+='<tr style="border-bottom:2px solid #e0e0e0"><th style="text-align:left;padding:6px 8px">Canal</th><th style="text-align:right;padding:6px 8px">Visitas</th><th style="text-align:right;padding:6px 8px">%</th><th style="text-align:right;padding:6px 8px">Conversoes</th><th style="text-align:right;padding:6px 8px">Conv %</th></tr>';
+    var totalVisits=pv.length||1;
+    channels.forEach(function(c){
+        var pct=Math.round(c.visits/totalVisits*100);
+        var convPct=c.visits>0?(c.conv/c.visits*100).toFixed(1):'0.0';
+        var bar='<div style="background:'+c.color+';height:6px;border-radius:3px;width:'+Math.max(pct,2)+'%;margin-top:2px"></div>';
+        chHtml+='<tr style="border-bottom:1px solid #f0f0f0"><td style="padding:8px">'+bar+'<span style="font-weight:600">'+c.name+'</span></td><td style="text-align:right;padding:8px;font-weight:700">'+c.visits+'</td><td style="text-align:right;padding:8px;color:#888">'+pct+'%</td><td style="text-align:right;padding:8px;font-weight:700;color:'+c.color+'">'+c.conv+'</td><td style="text-align:right;padding:8px">'+convPct+'%</td></tr>';
+    });
+    chHtml+='</table></div>';
+    document.getElementById('kpis').insertAdjacentHTML('afterend',chHtml);
 
     // MAPA - colorir estados estilo Google Analytics (gradiente de intensidade)
     var estadoCount={};
