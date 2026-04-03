@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-04-01T08:26:14",
+  "updated_at": "2026-04-03T07:36:04",
   "period_7d": {
-    "start": "2026-03-23",
-    "end": "2026-03-30"
+    "start": "2026-03-25",
+    "end": "2026-04-01"
   },
   "period_30d": {
-    "start": "2026-02-28",
-    "end": "2026-03-30"
+    "start": "2026-03-02",
+    "end": "2026-04-01"
   },
   "summary": {
     "clicks_7d": 0,
@@ -14,18 +14,18 @@
     "ctr_7d": 0,
     "avg_position_7d": 0,
     "clicks_30d": 0,
-    "impressions_30d": 25,
+    "impressions_30d": 31,
     "total_queries": 0,
-    "total_pages": 8
+    "total_pages": 7
   },
   "top_queries": [],
   "top_pages": [
     {
       "page": "/",
       "clicks": 0,
-      "impressions": 9,
+      "impressions": 12,
       "ctr": 0,
-      "position": 11
+      "position": 9.8
     },
     {
       "page": "/cachoeiro/mulheres/",
@@ -37,9 +37,9 @@
     {
       "page": "/colatina/mulheres/",
       "clicks": 0,
-      "impressions": 6,
+      "impressions": 4,
       "ctr": 0,
-      "position": 6.5
+      "position": 5
     },
     {
       "page": "/jundiai/mulheres/",
@@ -51,16 +51,9 @@
     {
       "page": "/marilia/mulheres/",
       "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 9
-    },
-    {
-      "page": "/santo-amaro/mulheres/",
-      "clicks": 0,
       "impressions": 1,
       "ctr": 0,
-      "position": 9
+      "position": 8
     },
     {
       "page": "/vila-velha/mulheres/",
@@ -72,9 +65,9 @@
     {
       "page": "/vitoria/",
       "clicks": 0,
-      "impressions": 3,
+      "impressions": 2,
       "ctr": 0,
-      "position": 9.7
+      "position": 10.5
     }
   ],
   "daily": [
@@ -154,6 +147,20 @@
       "impressions": 1,
       "ctr": 0,
       "position": 12
+    },
+    {
+      "date": "2026-03-31",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 9.3
+    },
+    {
+      "date": "2026-04-01",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8.7
     }
   ],
   "devices": [
@@ -166,7 +173,7 @@
     {
       "device": "MOBILE",
       "clicks": 0,
-      "impressions": 15,
+      "impressions": 13,
       "ctr": 0
     }
   ]
