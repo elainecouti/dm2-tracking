@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-04-03T07:36:04",
+  "updated_at": "2026-04-04T07:48:43",
   "period_7d": {
-    "start": "2026-03-25",
-    "end": "2026-04-01"
+    "start": "2026-03-26",
+    "end": "2026-04-02"
   },
   "period_30d": {
-    "start": "2026-03-02",
-    "end": "2026-04-01"
+    "start": "2026-03-03",
+    "end": "2026-04-02"
   },
   "summary": {
     "clicks_7d": 0,
@@ -14,30 +14,23 @@
     "ctr_7d": 0,
     "avg_position_7d": 0,
     "clicks_30d": 0,
-    "impressions_30d": 31,
+    "impressions_30d": 32,
     "total_queries": 0,
-    "total_pages": 7
+    "total_pages": 4
   },
   "top_queries": [],
   "top_pages": [
     {
       "page": "/",
       "clicks": 0,
-      "impressions": 12,
+      "impressions": 13,
       "ctr": 0,
-      "position": 9.8
-    },
-    {
-      "page": "/cachoeiro/mulheres/",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 10
+      "position": 9.9
     },
     {
       "page": "/colatina/mulheres/",
       "clicks": 0,
-      "impressions": 4,
+      "impressions": 3,
       "ctr": 0,
       "position": 5
     },
@@ -49,25 +42,11 @@
       "position": 7
     },
     {
-      "page": "/marilia/mulheres/",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 8
-    },
-    {
       "page": "/vila-velha/mulheres/",
       "clicks": 0,
       "impressions": 1,
       "ctr": 0,
       "position": 9
-    },
-    {
-      "page": "/vitoria/",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 10.5
     }
   ],
   "daily": [
@@ -161,6 +140,13 @@
       "impressions": 3,
       "ctr": 0,
       "position": 8.7
+    },
+    {
+      "date": "2026-04-02",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
     }
   ],
   "devices": [
@@ -173,7 +159,7 @@
     {
       "device": "MOBILE",
       "clicks": 0,
-      "impressions": 13,
+      "impressions": 9,
       "ctr": 0
     }
   ]
