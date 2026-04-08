@@ -1,24 +1,32 @@
 {
-  "updated_at": "2026-04-07T07:30:12",
+  "updated_at": "2026-04-08T07:30:14",
   "period_7d": {
-    "start": "2026-03-29",
-    "end": "2026-04-05"
+    "start": "2026-03-30",
+    "end": "2026-04-06"
   },
   "period_30d": {
-    "start": "2026-03-06",
-    "end": "2026-04-05"
+    "start": "2026-03-07",
+    "end": "2026-04-06"
   },
   "summary": {
     "clicks_7d": 0,
-    "impressions_7d": 0,
-    "ctr_7d": 0,
-    "avg_position_7d": 0,
+    "impressions_7d": 1,
+    "ctr_7d": 0.0,
+    "avg_position_7d": 11.0,
     "clicks_30d": 0,
-    "impressions_30d": 33,
-    "total_queries": 0,
-    "total_pages": 2
+    "impressions_30d": 35,
+    "total_queries": 1,
+    "total_pages": 3
   },
-  "top_queries": [],
+  "top_queries": [
+    {
+      "query": "metodo dm2 para diabetes",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
+    }
+  ],
   "top_pages": [
     {
       "page": "/",
@@ -28,11 +36,18 @@
       "position": 9.7
     },
     {
-      "page": "/colatina/mulheres/",
+      "page": "/jundiai/mulheres/",
       "clicks": 0,
-      "impressions": 3,
+      "impressions": 1,
       "ctr": 0,
-      "position": 5
+      "position": 11
+    },
+    {
+      "page": "/vitoria/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
     }
   ],
   "daily": [
@@ -147,19 +162,33 @@
       "impressions": 0,
       "ctr": 0,
       "position": 0
+    },
+    {
+      "date": "2026-04-05",
+      "clicks": 0,
+      "impressions": 0,
+      "ctr": 0,
+      "position": 0
+    },
+    {
+      "date": "2026-04-06",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 11
     }
   ],
   "devices": [
     {
       "device": "DESKTOP",
       "clicks": 0,
-      "impressions": 7,
+      "impressions": 4,
       "ctr": 0
     },
     {
       "device": "MOBILE",
       "clicks": 0,
-      "impressions": 5,
+      "impressions": 7,
       "ctr": 0
     }
   ]
