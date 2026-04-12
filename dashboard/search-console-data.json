@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-04-11T07:30:17",
+  "updated_at": "2026-04-12T07:30:12",
   "period_7d": {
-    "start": "2026-04-02",
-    "end": "2026-04-09"
+    "start": "2026-04-03",
+    "end": "2026-04-10"
   },
   "period_30d": {
-    "start": "2026-03-10",
-    "end": "2026-04-09"
+    "start": "2026-03-11",
+    "end": "2026-04-10"
   },
   "summary": {
     "clicks_7d": 0,
@@ -14,7 +14,7 @@
     "ctr_7d": 0.0,
     "avg_position_7d": 11.0,
     "clicks_30d": 0,
-    "impressions_30d": 40,
+    "impressions_30d": 44,
     "total_queries": 1,
     "total_pages": 3
   },
@@ -33,7 +33,7 @@
       "clicks": 0,
       "impressions": 3,
       "ctr": 0,
-      "position": 9.7
+      "position": 9
     },
     {
       "page": "/jundiai/mulheres/",
@@ -45,9 +45,9 @@
     {
       "page": "/vitoria/",
       "clicks": 0,
-      "impressions": 5,
+      "impressions": 8,
       "ctr": 0,
-      "position": 9.2
+      "position": 8.4
     }
   ],
   "daily": [
@@ -197,6 +197,13 @@
       "impressions": 0,
       "ctr": 0,
       "position": 0
+    },
+    {
+      "date": "2026-04-10",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 7.5
     }
   ],
   "devices": [
@@ -209,7 +216,7 @@
     {
       "device": "MOBILE",
       "clicks": 0,
-      "impressions": 6,
+      "impressions": 9,
       "ctr": 0
     }
   ]
