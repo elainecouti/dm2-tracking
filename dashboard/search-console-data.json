@@ -1,39 +1,31 @@
 {
-  "updated_at": "2026-04-15T07:30:14",
+  "updated_at": "2026-04-16T07:30:16",
   "period_7d": {
-    "start": "2026-04-06",
-    "end": "2026-04-13"
+    "start": "2026-04-07",
+    "end": "2026-04-14"
   },
   "period_30d": {
-    "start": "2026-03-14",
-    "end": "2026-04-13"
+    "start": "2026-03-15",
+    "end": "2026-04-14"
   },
   "summary": {
     "clicks_7d": 0,
-    "impressions_7d": 1,
-    "ctr_7d": 0.0,
-    "avg_position_7d": 11.0,
+    "impressions_7d": 0,
+    "ctr_7d": 0,
+    "avg_position_7d": 0,
     "clicks_30d": 0,
-    "impressions_30d": 45,
-    "total_queries": 1,
-    "total_pages": 6
+    "impressions_30d": 46,
+    "total_queries": 0,
+    "total_pages": 5
   },
-  "top_queries": [
-    {
-      "query": "metodo dm2 para diabetes",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 11
-    }
-  ],
+  "top_queries": [],
   "top_pages": [
     {
       "page": "/",
       "clicks": 0,
-      "impressions": 3,
+      "impressions": 4,
       "ctr": 0,
-      "position": 7
+      "position": 7.2
     },
     {
       "page": "/caxias/mulheres/",
@@ -50,13 +42,6 @@
       "position": 3
     },
     {
-      "page": "/jundiai/mulheres/",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 11
-    },
-    {
       "page": "/vila-velha/mulheres/",
       "clicks": 0,
       "impressions": 1,
@@ -66,9 +51,9 @@
     {
       "page": "/vitoria/",
       "clicks": 0,
-      "impressions": 9,
+      "impressions": 8,
       "ctr": 0,
-      "position": 7.6
+      "position": 7.1
     }
   ],
   "daily": [
@@ -246,6 +231,13 @@
       "impressions": 0,
       "ctr": 0,
       "position": 0
+    },
+    {
+      "date": "2026-04-14",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
     }
   ],
   "devices": [
@@ -258,7 +250,7 @@
     {
       "device": "MOBILE",
       "clicks": 0,
-      "impressions": 9,
+      "impressions": 8,
       "ctr": 0
     }
   ]
