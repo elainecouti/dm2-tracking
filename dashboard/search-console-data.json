@@ -1,24 +1,32 @@
 {
-  "updated_at": "2026-04-16T07:30:16",
+  "updated_at": "2026-04-17T07:30:14",
   "period_7d": {
-    "start": "2026-04-07",
-    "end": "2026-04-14"
+    "start": "2026-04-08",
+    "end": "2026-04-15"
   },
   "period_30d": {
-    "start": "2026-03-15",
-    "end": "2026-04-14"
+    "start": "2026-03-16",
+    "end": "2026-04-15"
   },
   "summary": {
     "clicks_7d": 0,
-    "impressions_7d": 0,
-    "ctr_7d": 0,
-    "avg_position_7d": 0,
+    "impressions_7d": 1,
+    "ctr_7d": 0.0,
+    "avg_position_7d": 12.0,
     "clicks_30d": 0,
-    "impressions_30d": 46,
-    "total_queries": 0,
+    "impressions_30d": 47,
+    "total_queries": 1,
     "total_pages": 5
   },
-  "top_queries": [],
+  "top_queries": [
+    {
+      "query": "metodo dm2 para diabetes",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 12
+    }
+  ],
   "top_pages": [
     {
       "page": "/",
@@ -51,9 +59,9 @@
     {
       "page": "/vitoria/",
       "clicks": 0,
-      "impressions": 8,
+      "impressions": 6,
       "ctr": 0,
-      "position": 7.1
+      "position": 7
     }
   ],
   "daily": [
@@ -238,6 +246,13 @@
       "impressions": 1,
       "ctr": 0,
       "position": 8
+    },
+    {
+      "date": "2026-04-15",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 12
     }
   ],
   "devices": [
@@ -250,7 +265,7 @@
     {
       "device": "MOBILE",
       "clicks": 0,
-      "impressions": 8,
+      "impressions": 6,
       "ctr": 0
     }
   ]
