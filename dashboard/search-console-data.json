@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-05-01T09:02:12",
+  "updated_at": "2026-05-02T07:30:13",
   "period_7d": {
-    "start": "2026-04-22",
-    "end": "2026-04-29"
+    "start": "2026-04-23",
+    "end": "2026-04-30"
   },
   "period_30d": {
-    "start": "2026-03-30",
-    "end": "2026-04-29"
+    "start": "2026-03-31",
+    "end": "2026-04-30"
   },
   "summary": {
     "clicks_7d": 0,
@@ -32,7 +32,7 @@
       "clicks": 0,
       "impressions": 2,
       "ctr": 0,
-      "position": 8
+      "position": 9
     },
     {
       "page": "/lapa/mulheres/",
@@ -43,13 +43,6 @@
     }
   ],
   "daily": [
-    {
-      "date": "2026-03-30",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 12
-    },
     {
       "date": "2026-03-31",
       "clicks": 0,
@@ -252,6 +245,20 @@
       "impressions": 2,
       "ctr": 0,
       "position": 4.5
+    },
+    {
+      "date": "2026-04-29",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "date": "2026-04-30",
+      "clicks": 0,
+      "impressions": 0,
+      "ctr": 0,
+      "position": 0
     }
   ],
   "devices": [
