@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-05-04T07:30:15",
+  "updated_at": "2026-05-06T07:31:12",
   "period_7d": {
-    "start": "2026-04-25",
-    "end": "2026-05-02"
+    "start": "2026-04-27",
+    "end": "2026-05-04"
   },
   "period_30d": {
-    "start": "2026-04-02",
-    "end": "2026-05-02"
+    "start": "2026-04-04",
+    "end": "2026-05-04"
   },
   "summary": {
     "clicks_7d": 0,
@@ -14,7 +14,7 @@
     "ctr_7d": 0,
     "avg_position_7d": 0,
     "clicks_30d": 0,
-    "impressions_30d": 28,
+    "impressions_30d": 26,
     "total_queries": 0,
     "total_pages": 4
   },
@@ -50,20 +50,6 @@
     }
   ],
   "daily": [
-    {
-      "date": "2026-04-02",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 11
-    },
-    {
-      "date": "2026-04-03",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 10
-    },
     {
       "date": "2026-04-04",
       "clicks": 0,
@@ -262,6 +248,13 @@
     },
     {
       "date": "2026-05-02",
+      "clicks": 0,
+      "impressions": 0,
+      "ctr": 0,
+      "position": 0
+    },
+    {
+      "date": "2026-05-03",
       "clicks": 0,
       "impressions": 0,
       "ctr": 0,
