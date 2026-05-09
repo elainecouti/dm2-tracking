@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-05-08T07:30:14",
+  "updated_at": "2026-05-09T07:38:47",
   "period_7d": {
-    "start": "2026-04-29",
-    "end": "2026-05-06"
+    "start": "2026-04-30",
+    "end": "2026-05-07"
   },
   "period_30d": {
-    "start": "2026-04-06",
-    "end": "2026-05-06"
+    "start": "2026-04-07",
+    "end": "2026-05-07"
   },
   "summary": {
     "clicks_7d": 0,
@@ -14,9 +14,9 @@
     "ctr_7d": 0,
     "avg_position_7d": 0,
     "clicks_30d": 0,
-    "impressions_30d": 32,
+    "impressions_30d": 30,
     "total_queries": 0,
-    "total_pages": 5
+    "total_pages": 4
   },
   "top_queries": [],
   "top_pages": [
@@ -29,13 +29,6 @@
     },
     {
       "page": "/caxias/mulheres/",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 10
-    },
-    {
-      "page": "/colatina/mulheres/",
       "clicks": 0,
       "impressions": 1,
       "ctr": 0,
@@ -57,13 +50,6 @@
     }
   ],
   "daily": [
-    {
-      "date": "2026-04-06",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 11
-    },
     {
       "date": "2026-04-07",
       "clicks": 0,
@@ -273,6 +259,13 @@
       "impressions": 4,
       "ctr": 0,
       "position": 9.5
+    },
+    {
+      "date": "2026-05-07",
+      "clicks": 0,
+      "impressions": 0,
+      "ctr": 0,
+      "position": 0
     }
   ],
   "devices": [
@@ -285,7 +278,7 @@
     {
       "device": "MOBILE",
       "clicks": 0,
-      "impressions": 4,
+      "impressions": 3,
       "ctr": 0
     }
   ]
