@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-05-10T07:30:41",
+  "updated_at": "2026-05-12T08:04:22",
   "period_7d": {
-    "start": "2026-05-01",
-    "end": "2026-05-08"
+    "start": "2026-05-03",
+    "end": "2026-05-10"
   },
   "period_30d": {
-    "start": "2026-04-08",
-    "end": "2026-05-08"
+    "start": "2026-04-10",
+    "end": "2026-05-10"
   },
   "summary": {
     "clicks_7d": 0,
@@ -14,7 +14,7 @@
     "ctr_7d": 0,
     "avg_position_7d": 0,
     "clicks_30d": 0,
-    "impressions_30d": 27,
+    "impressions_30d": 25,
     "total_queries": 0,
     "total_pages": 4
   },
@@ -44,26 +44,12 @@
     {
       "page": "/vitoria/",
       "clicks": 0,
-      "impressions": 2,
+      "impressions": 1,
       "ctr": 0,
-      "position": 9.5
+      "position": 10
     }
   ],
   "daily": [
-    {
-      "date": "2026-04-08",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 8
-    },
-    {
-      "date": "2026-04-09",
-      "clicks": 0,
-      "impressions": 0,
-      "ctr": 0,
-      "position": 0
-    },
     {
       "date": "2026-04-10",
       "clicks": 0,
@@ -266,6 +252,20 @@
       "impressions": 0,
       "ctr": 0,
       "position": 0
+    },
+    {
+      "date": "2026-05-09",
+      "clicks": 0,
+      "impressions": 0,
+      "ctr": 0,
+      "position": 0
+    },
+    {
+      "date": "2026-05-10",
+      "clicks": 0,
+      "impressions": 0,
+      "ctr": 0,
+      "position": 0
     }
   ],
   "devices": [
@@ -278,7 +278,7 @@
     {
       "device": "MOBILE",
       "clicks": 0,
-      "impressions": 3,
+      "impressions": 2,
       "ctr": 0
     }
   ]
