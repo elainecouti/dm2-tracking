@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-05-30T07:30:09",
+  "updated_at": "2026-05-31T07:30:14",
   "period_7d": {
-    "start": "2026-05-21",
-    "end": "2026-05-28"
+    "start": "2026-05-22",
+    "end": "2026-05-29"
   },
   "period_30d": {
-    "start": "2026-04-28",
-    "end": "2026-05-28"
+    "start": "2026-04-29",
+    "end": "2026-05-29"
   },
   "summary": {
     "clicks_7d": 0,
@@ -14,9 +14,9 @@
     "ctr_7d": 0,
     "avg_position_7d": 0,
     "clicks_30d": 0,
-    "impressions_30d": 25,
+    "impressions_30d": 24,
     "total_queries": 0,
-    "total_pages": 5
+    "total_pages": 6
   },
   "top_queries": [],
   "top_pages": [
@@ -28,6 +28,13 @@
       "position": 14.8
     },
     {
+      "page": "/cachoeiro/mulheres/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
+    },
+    {
       "page": "/campos-dos-goytacazes/mulheres/",
       "clicks": 0,
       "impressions": 1,
@@ -37,9 +44,9 @@
     {
       "page": "/colatina/mulheres/",
       "clicks": 0,
-      "impressions": 3,
+      "impressions": 2,
       "ctr": 0,
-      "position": 7.7
+      "position": 7
     },
     {
       "page": "/vila-velha/mulheres/",
@@ -57,13 +64,6 @@
     }
   ],
   "daily": [
-    {
-      "date": "2026-04-28",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 4.5
-    },
     {
       "date": "2026-04-29",
       "clicks": 0,
@@ -273,19 +273,26 @@
       "impressions": 5,
       "ctr": 0,
       "position": 15
+    },
+    {
+      "date": "2026-05-29",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
     }
   ],
   "devices": [
     {
       "device": "DESKTOP",
       "clicks": 0,
-      "impressions": 6,
+      "impressions": 5,
       "ctr": 0
     },
     {
       "device": "MOBILE",
       "clicks": 0,
-      "impressions": 5,
+      "impressions": 6,
       "ctr": 0
     }
   ]
