@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-06-06T07:30:12",
+  "updated_at": "2026-06-07T07:30:16",
   "period_7d": {
-    "start": "2026-05-28",
-    "end": "2026-06-04"
+    "start": "2026-05-29",
+    "end": "2026-06-05"
   },
   "period_30d": {
-    "start": "2026-05-05",
-    "end": "2026-06-04"
+    "start": "2026-05-06",
+    "end": "2026-06-05"
   },
   "summary": {
     "clicks_7d": 0,
@@ -14,63 +14,21 @@
     "ctr_7d": 0,
     "avg_position_7d": 0,
     "clicks_30d": 0,
-    "impressions_30d": 22,
+    "impressions_30d": 20,
     "total_queries": 0,
-    "total_pages": 6
+    "total_pages": 1
   },
   "top_queries": [],
   "top_pages": [
-    {
-      "page": "/",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0,
-      "position": 16.2
-    },
     {
       "page": "/cachoeiro/mulheres/",
       "clicks": 0,
       "impressions": 1,
       "ctr": 0,
       "position": 9
-    },
-    {
-      "page": "/campos-dos-goytacazes/mulheres/",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 5
-    },
-    {
-      "page": "/colatina/mulheres/",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 7
-    },
-    {
-      "page": "/vila-velha/mulheres/",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 4
-    },
-    {
-      "page": "/vitoria/",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 1
     }
   ],
   "daily": [
-    {
-      "date": "2026-05-05",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 10.5
-    },
     {
       "date": "2026-05-06",
       "clicks": 0,
@@ -259,19 +217,27 @@
       "impressions": 0,
       "ctr": 0,
       "position": 0
+    },
+    {
+      "date": "2026-06-02",
+      "clicks": 0,
+      "impressions": 0,
+      "ctr": 0,
+      "position": 0
+    },
+    {
+      "date": "2026-06-03",
+      "clicks": 0,
+      "impressions": 0,
+      "ctr": 0,
+      "position": 0
     }
   ],
   "devices": [
     {
-      "device": "DESKTOP",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0
-    },
-    {
       "device": "MOBILE",
       "clicks": 0,
-      "impressions": 4,
+      "impressions": 1,
       "ctr": 0
     }
   ]
