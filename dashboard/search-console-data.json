@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-06-12T07:30:14",
+  "updated_at": "2026-06-13T07:32:02",
   "period_7d": {
-    "start": "2026-06-03",
-    "end": "2026-06-10"
+    "start": "2026-06-04",
+    "end": "2026-06-11"
   },
   "period_30d": {
-    "start": "2026-05-11",
-    "end": "2026-06-10"
+    "start": "2026-05-12",
+    "end": "2026-06-11"
   },
   "summary": {
     "clicks_7d": 0,
@@ -21,13 +21,6 @@
   "top_queries": [],
   "top_pages": [],
   "daily": [
-    {
-      "date": "2026-05-11",
-      "clicks": 0,
-      "impressions": 0,
-      "ctr": 0,
-      "position": 0
-    },
     {
       "date": "2026-05-12",
       "clicks": 0,
@@ -233,6 +226,13 @@
     },
     {
       "date": "2026-06-10",
+      "clicks": 0,
+      "impressions": 0,
+      "ctr": 0,
+      "position": 0
+    },
+    {
+      "date": "2026-06-11",
       "clicks": 0,
       "impressions": 0,
       "ctr": 0,
