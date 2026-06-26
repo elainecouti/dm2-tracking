@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-06-25T07:48:49",
+  "updated_at": "2026-06-26T07:30:12",
   "period_7d": {
-    "start": "2026-06-16",
-    "end": "2026-06-23"
+    "start": "2026-06-17",
+    "end": "2026-06-24"
   },
   "period_30d": {
-    "start": "2026-05-24",
-    "end": "2026-06-23"
+    "start": "2026-05-25",
+    "end": "2026-06-24"
   },
   "summary": {
     "clicks_7d": 0,
@@ -14,20 +14,21 @@
     "ctr_7d": 0,
     "avg_position_7d": 0,
     "clicks_30d": 0,
-    "impressions_30d": 11,
+    "impressions_30d": 12,
     "total_queries": 0,
-    "total_pages": 0
+    "total_pages": 1
   },
   "top_queries": [],
-  "top_pages": [],
-  "daily": [
+  "top_pages": [
     {
-      "date": "2026-05-24",
+      "page": "/jundiai/",
       "clicks": 0,
-      "impressions": 0,
+      "impressions": 1,
       "ctr": 0,
-      "position": 0
-    },
+      "position": 10
+    }
+  ],
+  "daily": [
     {
       "date": "2026-05-25",
       "clicks": 0,
@@ -237,7 +238,21 @@
       "impressions": 0,
       "ctr": 0,
       "position": 0
+    },
+    {
+      "date": "2026-06-24",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10
     }
   ],
-  "devices": []
+  "devices": [
+    {
+      "device": "DESKTOP",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0
+    }
+  ]
 }
