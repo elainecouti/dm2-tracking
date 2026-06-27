@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-06-26T07:30:12",
+  "updated_at": "2026-06-27T07:54:05",
   "period_7d": {
-    "start": "2026-06-17",
-    "end": "2026-06-24"
+    "start": "2026-06-18",
+    "end": "2026-06-25"
   },
   "period_30d": {
-    "start": "2026-05-25",
-    "end": "2026-06-24"
+    "start": "2026-05-26",
+    "end": "2026-06-25"
   },
   "summary": {
     "clicks_7d": 0,
@@ -14,7 +14,7 @@
     "ctr_7d": 0,
     "avg_position_7d": 0,
     "clicks_30d": 0,
-    "impressions_30d": 12,
+    "impressions_30d": 11,
     "total_queries": 0,
     "total_pages": 1
   },
@@ -29,13 +29,6 @@
     }
   ],
   "daily": [
-    {
-      "date": "2026-05-25",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 7
-    },
     {
       "date": "2026-05-26",
       "clicks": 0,
@@ -245,6 +238,13 @@
       "impressions": 1,
       "ctr": 0,
       "position": 10
+    },
+    {
+      "date": "2026-06-25",
+      "clicks": 0,
+      "impressions": 0,
+      "ctr": 0,
+      "position": 0
     }
   ],
   "devices": [
